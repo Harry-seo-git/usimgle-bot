@@ -1,0 +1,11 @@
+{
+  "name": "usimgle-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "@slack/bolt": "^3.12.2",
+    "axios": "^0.27.2",
+    "dotenv": "^10.0.0"
+  }
+}
