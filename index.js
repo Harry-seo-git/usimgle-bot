@@ -29,6 +29,15 @@ const addRow = (d) =>
   sheetEnabled
     ? axios.post(process.env.GOOGLE_API_URL, d)
     : Promise.resolve();
+const updateRow = (d) =>
+  sheetEnabled
+    ? axios.post(process.env.GOOGLE_API_URL, { ...d, _action: 'update' })
+    : Promise.resolve();
+
+// --- JSON 파일 저장 헬퍼 ---
+function saveGuide() {
+  fs.writeFileSync(guidePath, JSON.stringify(guide, null, 2), 'utf-8');
+}
 
 // --- AI 호출 (폴백 체인) ---
 async function askAI(prompt) {
@@ -169,6 +178,10 @@ app.command('/uxr', async ({ command, ack, respond }) => {
       case '등록':
       case 'add':
         await handleAdd(args, respond);
+        break;
+      case '수정':
+      case 'edit':
+        await handleEdit(args, respond);
         break;
       case '톤':
       case 'tone':
@@ -522,12 +535,34 @@ async function handleAdd(text, respond) {
 
   const [category, uxText, tone = '안내', component = '미정'] = parts;
 
-  // 구글시트에 저장
+  // ID 자동 생성
+  const catKey = Object.keys(guide.categories).find(
+    (k) => guide.categories[k].label === category || k === category
+  ) || category;
+  const catData = guide.categories[catKey];
+  const existingCount = catData ? catData.entries.length : 0;
+  const prefix = catKey.substring(0, 3);
+  const newId = `${prefix}-${String(existingCount + 1).padStart(3, '0')}`;
+
+  const newEntry = { id: newId, situation: uxText.substring(0, 20), text: uxText, tone, component };
+
+  // 1) JSON에 저장
+  if (!guide.categories[catKey]) {
+    guide.categories[catKey] = { label: category, entries: [] };
+  }
+  guide.categories[catKey].entries.push(newEntry);
+  try {
+    saveGuide();
+  } catch (err) {
+    return respond({ response_type: 'ephemeral', text: `JSON 저장 오류: ${err.message}` });
+  }
+
+  // 2) 구글시트에 저장
   if (sheetEnabled) {
     try {
-      await addRow({ category, text: uxText, tone, notes: component });
+      await addRow({ id: newId, category: catKey, situation: newEntry.situation, text: uxText, tone, component, registeredBy: 'slack', createdAt: new Date().toISOString() });
     } catch (err) {
-      return respond({ response_type: 'ephemeral', text: `등록 오류: ${err.message}` });
+      // 시트 실패해도 JSON엔 이미 저장됨
     }
   }
 
@@ -541,11 +576,110 @@ async function handleAdd(text, respond) {
       {
         type: 'section',
         fields: [
+          { type: 'mrkdwn', text: `*ID:* \`${newId}\`` },
           { type: 'mrkdwn', text: `*카테고리:* ${category}` },
           { type: 'mrkdwn', text: `*톤:* ${tone}` },
-          { type: 'mrkdwn', text: `*문구:* ${uxText}` },
           { type: 'mrkdwn', text: `*컴포넌트:* ${component}` },
         ],
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*문구:* ${uxText}` },
+      },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: sheetEnabled ? 'JSON + Google Sheets 양쪽 저장 완료' : 'JSON 저장 완료 (시트 미연동)' }],
+      },
+    ],
+  });
+}
+
+// --- 핸들러: 수정 ---
+async function handleEdit(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '수정 형식: `/uxr 수정 ID|필드|새값`\n\n*수정 가능 필드:* text, tone, component, situation\n\n예시:\n`/uxr 수정 ord-001|text|주문이 완료됐어요!`\n`/uxr 수정 onb-003|tone|축하`',
+    });
+  }
+
+  const parts = text.split('|').map((t) => t.trim());
+  if (parts.length < 3) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '형식: `/uxr 수정 ID|필드|새값`\n예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`',
+    });
+  }
+
+  const [id, field, newValue] = parts;
+  const allowedFields = ['text', 'tone', 'component', 'situation'];
+  if (!allowedFields.includes(field)) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `수정 가능한 필드: ${allowedFields.join(', ')}\n입력한 필드: "${field}"`,
+    });
+  }
+
+  // JSON에서 해당 ID 찾기
+  let found = null;
+  let catKey = null;
+  for (const [key, cat] of Object.entries(guide.categories)) {
+    const entry = cat.entries.find((e) => e.id === id);
+    if (entry) {
+      found = entry;
+      catKey = key;
+      break;
+    }
+  }
+
+  if (!found) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `ID "${id}"를 찾을 수 없어요. \`/uxr 검색\`으로 ID를 확인해 주세요.`,
+    });
+  }
+
+  const oldValue = found[field] || '(없음)';
+  found[field] = newValue;
+
+  // 1) JSON 저장
+  try {
+    saveGuide();
+  } catch (err) {
+    return respond({ response_type: 'ephemeral', text: `JSON 저장 오류: ${err.message}` });
+  }
+
+  // 2) 구글시트 수정
+  if (sheetEnabled) {
+    try {
+      await updateRow({ id, field, value: newValue });
+    } catch (err) {
+      // 시트 실패해도 JSON엔 이미 저장됨
+    }
+  }
+
+  return respond({
+    response_type: 'in_channel',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: 'UX 문구 수정 완료' },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*ID:* \`${id}\`` },
+          { type: 'mrkdwn', text: `*카테고리:* ${catKey}` },
+          { type: 'mrkdwn', text: `*필드:* ${field}` },
+        ],
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*이전:* ${oldValue}\n*변경:* ${newValue}` },
+      },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: sheetEnabled ? 'JSON + Google Sheets 양쪽 수정 완료' : 'JSON 수정 완료 (시트 미연동)' }],
       },
     ],
   });
@@ -1148,8 +1282,10 @@ async function handleHelp(respond) {
             '  예: `/uxr 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
             '`/uxr 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
             '  예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오/배송 완료됐어요`',
-            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
+            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록 (JSON+시트)',
             '  예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
+            '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정 (JSON+시트)',
+            '  예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`',
           ].join('\n'),
         },
       },
