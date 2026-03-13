@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "service": "유심사 (Usimgle)",
+    "description": "USIM/SIM 카드 온라인 마켓플레이스",
+    "version": "1.0.0",
+    "lastUpdated": "2026-03-13"
+  },
+  "principles": {
+    "voiceTone": {
+      "brand": "친근하고 신뢰감 있는 통신 전문가",
+      "keywords": ["명확", "간결", "친근", "신뢰", "전문"],
+      "rules": [
+        "존댓말(해요체)을 기본으로 사용해요",
+        "기술 용어는 쉬운 말로 풀어서 설명해요",
+        "사용자의 행동을 긍정적으로 안내해요",
+        "불안감을 줄이고 다음 단계를 명확히 알려줘요",
+        "이모지는 핵심 포인트에만 절제해서 사용해요"
+      ]
+    },
+    "writingRules": [
+      { "rule": "한 문장은 40자 이내로 작성", "example": "유심이 3일 내 배송돼요" },
+      { "rule": "능동태를 사용", "bad": "결제가 처리되었습니다", "good": "결제를 완료했어요" },
+      { "rule": "부정문보다 긍정문 사용", "bad": "입력하지 않으면 진행할 수 없습니다", "good": "정보를 입력하면 바로 진행돼요" },
+      { "rule": "CTA(행동유도) 버튼은 동사로 시작", "example": "유심 주문하기, 배송 조회하기" },
+      { "rule": "에러 메시지는 원인 + 해결방법 구조", "example": "카드 정보를 확인해 주세요. 카드번호 16자리를 다시 입력해 주세요." }
+    ]
+  },
+  "categories": {
+    "onboarding": {
+      "label": "온보딩/가입",
+      "entries": [
+        { "id": "onb-001", "situation": "첫 방문 환영", "text": "유심사에 오신 걸 환영해요! 알뜰하게 유심을 만나보세요.", "tone": "친근", "component": "배너" },
+        { "id": "onb-002", "situation": "회원가입 유도", "text": "1분이면 가입 완료! 첫 주문 할인 혜택도 받아보세요.", "tone": "친근", "component": "팝업" },
+        { "id": "onb-003", "situation": "회원가입 완료", "text": "가입을 완료했어요! 지금 바로 나에게 맞는 유심을 찾아보세요.", "tone": "축하", "component": "확인 페이지" },
+        { "id": "onb-004", "situation": "본인인증 안내", "text": "안전한 서비스를 위해 본인인증이 필요해요. 1분이면 완료돼요.", "tone": "안내", "component": "인증 페이지" }
+      ]
+    },
+    "browse": {
+      "label": "상품 탐색",
+      "entries": [
+        { "id": "brw-001", "situation": "검색 결과 없음", "text": "검색 결과가 없어요. 다른 키워드로 찾아볼까요?", "tone": "안내", "component": "검색 결과" },
+        { "id": "brw-002", "situation": "필터 적용 결과 없음", "text": "조건에 맞는 상품이 없어요. 필터를 조정해 보세요.", "tone": "안내", "component": "상품 목록" },
+        { "id": "brw-003", "situation": "인기 상품 추천", "text": "지금 가장 많이 찾는 유심이에요", "tone": "추천", "component": "상품 카드" },
+        { "id": "brw-004", "situation": "상품 비교 안내", "text": "최대 3개까지 비교할 수 있어요. 나에게 맞는 유심을 골라보세요.", "tone": "안내", "component": "비교 페이지" },
+        { "id": "brw-005", "situation": "데이터 용량 설명", "text": "월 5GB면 하루 약 170MB, 웹서핑과 SNS를 편하게 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" }
+      ]
+    },
+    "order": {
+      "label": "주문/결제",
+      "entries": [
+        { "id": "ord-001", "situation": "장바구니 담기 완료", "text": "장바구니에 담았어요! 바로 주문할까요?", "tone": "확인", "component": "토스트" },
+        { "id": "ord-002", "situation": "주문서 작성 안내", "text": "배송 정보를 입력해 주세요. 유심은 주소지로 배송돼요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-003", "situation": "결제 진행 중", "text": "결제를 처리하고 있어요. 잠시만 기다려 주세요.", "tone": "안내", "component": "로딩" },
+        { "id": "ord-004", "situation": "결제 완료", "text": "주문이 완료됐어요! 빠르게 배송 준비할게요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "ord-005", "situation": "결제 실패", "text": "결제가 완료되지 않았어요. 카드 정보를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러 모달" },
+        { "id": "ord-006", "situation": "재고 소진", "text": "이 상품은 일시적으로 품절이에요. 입고 알림을 받아보세요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "ord-007", "situation": "쿠폰 적용 완료", "text": "쿠폰이 적용됐어요! 할인된 금액을 확인해 보세요.", "tone": "확인", "component": "주문서" }
+      ]
+    },
+    "delivery": {
+      "label": "배송/수령",
+      "entries": [
+        { "id": "dlv-001", "situation": "배송 시작", "text": "유심이 출발했어요! 배송 현황을 실시간으로 확인하세요.", "tone": "안내", "component": "알림" },
+        { "id": "dlv-002", "situation": "배송 완료", "text": "유심이 도착했어요! 개통 방법을 안내해 드릴게요.", "tone": "축하", "component": "알림" },
+        { "id": "dlv-003", "situation": "배송 지연", "text": "배송이 조금 늦어지고 있어요. 빠르게 처리할게요. 불편을 드려 죄송해요.", "tone": "사과", "component": "알림" },
+        { "id": "dlv-004", "situation": "배송 조회", "text": "주문번호로 배송 현황을 확인해 보세요.", "tone": "안내", "component": "조회 페이지" }
+      ]
+    },
+    "activation": {
+      "label": "개통/활성화",
+      "entries": [
+        { "id": "act-001", "situation": "개통 절차 안내", "text": "유심을 휴대폰에 넣고, 아래 순서대로 진행해 주세요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-002", "situation": "개통 완료", "text": "개통이 완료됐어요! 이제 새 유심으로 통화와 데이터를 이용하세요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "act-003", "situation": "개통 실패", "text": "개통 중 문제가 발생했어요. 고객센터(1234-5678)로 연락해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "act-004", "situation": "번호이동 안내", "text": "기존 번호를 그대로 쓸 수 있어요. 인증 후 자동으로 번호이동이 진행돼요.", "tone": "안내", "component": "가이드" }
+      ]
+    },
+    "account": {
+      "label": "계정/마이페이지",
+      "entries": [
+        { "id": "acc-001", "situation": "로그인 실패", "text": "아이디 또는 비밀번호가 일치하지 않아요. 다시 확인해 주세요.", "tone": "안내", "component": "로그인 폼" },
+        { "id": "acc-002", "situation": "비밀번호 재설정", "text": "가입한 이메일로 재설정 링크를 보냈어요. 메일함을 확인해 주세요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "acc-003", "situation": "회원 탈퇴 확인", "text": "정말 탈퇴하시겠어요? 탈퇴하면 주문 내역과 혜택이 모두 사라져요.", "tone": "주의", "component": "확인 모달" },
+        { "id": "acc-004", "situation": "개인정보 수정 완료", "text": "정보가 수정됐어요.", "tone": "확인", "component": "토스트" }
+      ]
+    },
+    "support": {
+      "label": "고객지원",
+      "entries": [
+        { "id": "sup-001", "situation": "1:1 문의 접수", "text": "문의가 접수됐어요. 영업일 기준 1일 내 답변드릴게요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "sup-002", "situation": "FAQ 안내", "text": "자주 묻는 질문에서 답변을 찾아보세요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-003", "situation": "채팅 상담 시작", "text": "안녕하세요! 무엇을 도와드릴까요?", "tone": "친근", "component": "채팅" },
+        { "id": "sup-004", "situation": "환불 접수 완료", "text": "환불 요청이 접수됐어요. 3~5 영업일 내 처리될 예정이에요.", "tone": "안내", "component": "확인 페이지" }
+      ]
+    },
+    "system": {
+      "label": "시스템/공통",
+      "entries": [
+        { "id": "sys-001", "situation": "네트워크 오류", "text": "인터넷 연결이 불안정해요. 연결 상태를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "sys-002", "situation": "서버 점검", "text": "더 나은 서비스를 위해 점검 중이에요. 곧 다시 만나요!", "tone": "안내", "component": "점검 페이지" },
+        { "id": "sys-003", "situation": "세션 만료", "text": "안전을 위해 자동으로 로그아웃됐어요. 다시 로그인해 주세요.", "tone": "안내", "component": "모달" },
+        { "id": "sys-004", "situation": "업데이트 안내", "text": "새로운 기능이 추가됐어요! 업데이트하고 더 편리하게 이용해 보세요.", "tone": "친근", "component": "배너" },
+        { "id": "sys-005", "situation": "빈 상태(Empty State)", "text": "아직 주문 내역이 없어요. 첫 유심을 주문해 보세요!", "tone": "친근", "component": "빈 페이지" }
+      ]
+    },
+    "marketing": {
+      "label": "마케팅/프로모션",
+      "entries": [
+        { "id": "mkt-001", "situation": "할인 이벤트", "text": "지금 주문하면 최대 30% 할인! 놓치지 마세요.", "tone": "긴급", "component": "배너" },
+        { "id": "mkt-002", "situation": "리뷰 작성 유도", "text": "사용 후기를 남겨주세요! 포인트 500원을 드려요.", "tone": "친근", "component": "알림" },
+        { "id": "mkt-003", "situation": "추천인 이벤트", "text": "친구에게 유심사를 소개하면 둘 다 3,000원 할인!", "tone": "친근", "component": "이벤트 페이지" },
+        { "id": "mkt-004", "situation": "장바구니 리마인더", "text": "담아둔 유심이 기다리고 있어요. 지금 주문하면 오늘 출발!", "tone": "친근", "component": "푸시 알림" }
+      ]
+    }
+  },
+  "toneGuide": {
+    "친근": { "description": "일상적이고 따뜻한 말투", "suffix": "~요, ~세요", "emoji": true },
+    "안내": { "description": "명확하고 차분한 정보 전달", "suffix": "~해 주세요, ~돼요", "emoji": false },
+    "축하": { "description": "긍정적이고 밝은 피드백", "suffix": "~했어요!, ~완료!", "emoji": true },
+    "주의": { "description": "중요 사항을 강조하되 불안하지 않게", "suffix": "~하시겠어요?, ~사라져요", "emoji": false },
+    "사과": { "description": "진심 어린 사과와 빠른 해결 의지", "suffix": "~죄송해요, ~할게요", "emoji": false },
+    "긴급": { "description": "시간 제한을 강조하되 과하지 않게", "suffix": "~마세요, ~지금", "emoji": true },
+    "확인": { "description": "행동 결과를 간결하게 확인", "suffix": "~했어요, ~됐어요", "emoji": false },
+    "설명": { "description": "쉽고 구체적인 정보 제공", "suffix": "~할 수 있어요, ~이에요", "emoji": false },
+    "추천": { "description": "자연스러운 추천과 근거 제시", "suffix": "~이에요, ~해보세요", "emoji": false }
+  }
+}

@@ -1,11 +1,18 @@
 {
-  "name": "usimgle-bot",
-  "version": "1.0.0",
+  "name": "usimgle-ux-writing-bot",
+  "version": "2.0.0",
+  "description": "유심사 UX 라이팅 가이드 슬랙 봇 - UX 문구 검색, AI 추천, 피드백",
   "main": "index.js",
-  "scripts": { "start": "node index.js" },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
   "dependencies": {
     "@slack/bolt": "^3.12.2",
-    "axios": "^0.27.2",
-    "dotenv": "^10.0.0"
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
