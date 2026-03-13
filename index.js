@@ -183,6 +183,10 @@ app.command('/uxr', async ({ command, ack, respond }) => {
       case 'edit':
         await handleEdit(args, respond);
         break;
+      case '히스토리':
+      case 'history':
+        await handleHistory(args, respond);
+        break;
       case '톤':
       case 'tone':
         await handleTone(args, respond);
@@ -544,7 +548,11 @@ async function handleAdd(text, respond) {
   const prefix = catKey.substring(0, 3);
   const newId = `${prefix}-${String(existingCount + 1).padStart(3, '0')}`;
 
-  const newEntry = { id: newId, situation: uxText.substring(0, 20), text: uxText, tone, component };
+  const now = new Date().toISOString();
+  const newEntry = {
+    id: newId, situation: uxText.substring(0, 20), text: uxText, tone, component,
+    history: [{ action: '등록', date: now, by: 'slack', detail: '최초 등록' }],
+  };
 
   // 1) JSON에 저장
   if (!guide.categories[catKey]) {
@@ -642,6 +650,17 @@ async function handleEdit(text, respond) {
   const oldValue = found[field] || '(없음)';
   found[field] = newValue;
 
+  // 히스토리 기록
+  if (!found.history) found.history = [];
+  found.history.push({
+    action: '수정',
+    date: new Date().toISOString(),
+    by: 'slack',
+    field,
+    from: oldValue,
+    to: newValue,
+  });
+
   // 1) JSON 저장
   try {
     saveGuide();
@@ -680,6 +699,75 @@ async function handleEdit(text, respond) {
       {
         type: 'context',
         elements: [{ type: 'mrkdwn', text: sheetEnabled ? 'JSON + Google Sheets 양쪽 수정 완료' : 'JSON 수정 완료 (시트 미연동)' }],
+      },
+    ],
+  });
+}
+
+// --- 핸들러: 히스토리 ---
+async function handleHistory(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '사용법: `/uxr 히스토리 [ID]`\n예: `/uxr 히스토리 ord-001`',
+    });
+  }
+
+  const id = text.trim();
+  let found = null;
+  let catKey = null;
+  for (const [key, cat] of Object.entries(guide.categories)) {
+    const entry = cat.entries.find((e) => e.id === id);
+    if (entry) {
+      found = entry;
+      catKey = key;
+      break;
+    }
+  }
+
+  if (!found) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `ID "${id}"를 찾을 수 없어요. \`/uxr 검색\`으로 ID를 확인해 주세요.`,
+    });
+  }
+
+  const history = found.history || [];
+  if (history.length === 0) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `\`${id}\` 의 변경 이력이 없습니다. (히스토리 기능 추가 이전에 등록된 문구)`,
+    });
+  }
+
+  const lines = history.map((h, i) => {
+    const date = h.date ? h.date.substring(0, 16).replace('T', ' ') : '?';
+    if (h.action === '등록') {
+      return `${i + 1}. *${h.action}* — ${date}\n    ${h.detail || ''}`;
+    }
+    return `${i + 1}. *${h.action}* \`${h.field}\` — ${date}\n    "${h.from}" → "${h.to}"`;
+  });
+
+  return respond({
+    response_type: 'ephemeral',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: `${id} 변경 히스토리` },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*ID:* \`${id}\`` },
+          { type: 'mrkdwn', text: `*카테고리:* ${catKey}` },
+          { type: 'mrkdwn', text: `*현재 문구:* ${found.text}` },
+          { type: 'mrkdwn', text: `*변경 횟수:* ${history.length}회` },
+        ],
+      },
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: lines.join('\n\n') },
       },
     ],
   });
@@ -1286,6 +1374,8 @@ async function handleHelp(respond) {
             '  예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
             '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정 (JSON+시트)',
             '  예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`',
+            '`/uxr 히스토리 [ID]` — 문구 변경 이력 조회',
+            '  예: `/uxr 히스토리 ord-001`',
           ].join('\n'),
         },
       },
