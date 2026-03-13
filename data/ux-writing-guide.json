@@ -1,9 +1,14 @@
 {
   "meta": {
-    "service": "유심사 (Usimgle)",
-    "description": "글로벌 eSIM/USIM 해외 데이터 로밍 플랫폼 (148개국+, 가제트코리아 운영)",
-    "version": "1.0.0",
-    "lastUpdated": "2026-03-13"
+    "service": "유심사 (USIMSA)",
+    "description": "글로벌 eSIM/USIM 해외 데이터 로밍 플랫폼 (200개국+, 700만 고객, 가제트코리아 운영)",
+    "version": "2.0.0",
+    "lastUpdated": "2026-03-13",
+    "slogan": "700만의 여행 필수품, 유심사",
+    "products": ["eSIM", "물리유심(USIM)", "포켓와이파이"],
+    "networks": ["로컬망 (현지 통신사 직접 연결)", "로밍망 (제휴 통신사 로밍)"],
+    "planTypes": ["완전 무제한", "일일 용량 제한형 (저속 무제한)", "총량형"],
+    "keyFeatures": ["QR코드 스캔 설치", "원클릭 설치", "데이터 충전/연장", "유심사케어 보상", "구글맵 무료 데이터", "24시간 고객센터", "3% 무제한 적립"]
   },
   "principles": {
     "voiceTone": {
@@ -40,7 +45,10 @@
         { "id": "onb-009", "situation": "튜토리얼 건너뛰기", "text": "나중에 마이페이지에서 다시 볼 수 있어요.", "tone": "안내", "component": "토스트" },
         { "id": "onb-010", "situation": "앱 알림 허용 요청", "text": "배송 현황과 여행지 꿀팁을 알림으로 받아보세요.", "tone": "추천", "component": "권한 요청" },
         { "id": "onb-011", "situation": "위치 권한 요청", "text": "현재 위치 기반으로 가장 적합한 요금제를 추천해 드려요.", "tone": "설명", "component": "권한 요청" },
-        { "id": "onb-012", "situation": "재방문 환영", "text": "다시 오셨군요! 지난번에 보던 요금제를 이어서 확인해 보세요.", "tone": "친근", "component": "배너" }
+        { "id": "onb-012", "situation": "재방문 환영", "text": "다시 오셨군요! 지난번에 보던 요금제를 이어서 확인해 보세요.", "tone": "친근", "component": "배너" },
+        { "id": "onb-013", "situation": "700만 고객 신뢰 배너", "text": "700만 여행자가 선택한 유심사! 지금 시작해 보세요.", "tone": "친근", "component": "메인 배너" },
+        { "id": "onb-014", "situation": "GSMA 정회원 신뢰", "text": "유심사는 국내 최초 GSMA 정회원으로, 글로벌 통신 품질을 보장해요.", "tone": "설명", "component": "신뢰 배너" },
+        { "id": "onb-015", "situation": "앱 설치 유도", "text": "유심사 앱이면 1분 만에 eSIM 구매부터 설치까지 끝! 지금 다운로드하세요.", "tone": "추천", "component": "앱 배너" }
       ]
     },
     "browse": {
@@ -54,7 +62,18 @@
         { "id": "brw-006", "situation": "여행지 검색", "text": "어디로 여행하세요? 나라를 선택하면 맞춤 요금제를 추천해 드려요.", "tone": "친근", "component": "검색" },
         { "id": "brw-007", "situation": "eSIM vs 실물유심 선택", "text": "eSIM은 QR로 바로 설치! 실물유심은 배송 후 장착하면 돼요.", "tone": "설명", "component": "상품 선택" },
         { "id": "brw-008", "situation": "로컬망 vs 로밍망 설명", "text": "로컬망은 현지 통신사에 직접 연결돼 속도가 빠르고 안정적이에요.", "tone": "설명", "component": "상품 상세" },
-        { "id": "brw-009", "situation": "기기 호환성 안내", "text": "내 폰이 eSIM을 지원하는지 확인해 보세요. *#06# 을 누르면 알 수 있어요.", "tone": "안내", "component": "상품 상세" }
+        { "id": "brw-009", "situation": "기기 호환성 안내", "text": "내 폰이 eSIM을 지원하는지 확인해 보세요. *#06# 을 누르면 알 수 있어요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "brw-010", "situation": "완전 무제한 요금제 안내", "text": "데이터 걱정 없는 완전 무제한! 7,700원부터 시작해요.", "tone": "추천", "component": "상품 카드" },
+        { "id": "brw-011", "situation": "저속 무제한 요금제 안내", "text": "매일 5GB 사용 후에도 저속으로 계속 이용할 수 있어요. 5,900원부터.", "tone": "설명", "component": "상품 카드" },
+        { "id": "brw-012", "situation": "국가 선택 안내", "text": "어디로 떠나세요? 국가를 선택하면 맞춤 요금제를 보여드려요.", "tone": "친근", "component": "국가 검색" },
+        { "id": "brw-013", "situation": "지역 통합 요금제 추천", "text": "여러 나라를 이동하시나요? 유럽 30개국 통합 요금제가 더 경제적이에요.", "tone": "추천", "component": "상품 추천" },
+        { "id": "brw-014", "situation": "사용 기간 선택", "text": "여행 기간에 맞는 요금제를 골라보세요. 1일부터 30일까지 선택 가능해요.", "tone": "안내", "component": "필터" },
+        { "id": "brw-015", "situation": "로컬망 vs 로밍망 비교", "text": "로컬망은 속도가 빠르고, 로밍망은 데이터 충전이 가능해요.", "tone": "설명", "component": "비교 안내" },
+        { "id": "brw-016", "situation": "인기 여행지 바로가기", "text": "일본 · 미국 · 유럽 · 동남아 — 인기 여행지 요금제를 바로 확인하세요.", "tone": "추천", "component": "퀵 링크" },
+        { "id": "brw-017", "situation": "포켓와이파이 안내", "text": "여러 기기에서 함께 쓰려면 포켓와이파이가 편리해요.", "tone": "설명", "component": "상품 카드" },
+        { "id": "brw-018", "situation": "eSIM 지원 기기 확인", "text": "iPhone은 설정 > 셀룰러에서 'eSIM 추가' 버튼이 있으면 지원돼요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "brw-019", "situation": "Samsung eSIM 확인", "text": "Galaxy S23 이후, Z Flip4/Fold4 이후 모델에서 eSIM을 지원해요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "brw-020", "situation": "통화 포함 요금제", "text": "현지 통화가 필요하면 통화 포함 요금제를 선택해 보세요.", "tone": "추천", "component": "필터" }
       ]
     },
     "order": {
@@ -74,7 +93,12 @@
         { "id": "ord-012", "situation": "부분 환불 완료", "text": "일부 금액이 환불됐어요. 상세 내역을 확인해 보세요.", "tone": "확인", "component": "확인 페이지" },
         { "id": "ord-013", "situation": "최소 주문 금액 미달", "text": "최소 주문 금액은 {price}원이에요. 상품을 더 담아주세요.", "tone": "안내", "component": "장바구니" },
         { "id": "ord-014", "situation": "쿠폰 만료", "text": "이 쿠폰은 사용 기간이 지났어요. 다른 쿠폰을 확인해 보세요.", "tone": "안내", "component": "주문서" },
-        { "id": "ord-015", "situation": "재주문 안내", "text": "이전 주문을 그대로 다시 주문할 수 있어요.", "tone": "추천", "component": "주문 내역" }
+        { "id": "ord-015", "situation": "재주문 안내", "text": "이전 주문을 그대로 다시 주문할 수 있어요.", "tone": "추천", "component": "주문 내역" },
+        { "id": "ord-016", "situation": "적립금 사용", "text": "보유 적립금 {point}원을 사용하면 결제 금액이 줄어들어요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-017", "situation": "쿠폰 선택", "text": "사용 가능한 쿠폰이 {count}개 있어요. 가장 할인이 큰 쿠폰을 추천해 드려요.", "tone": "추천", "component": "주문서" },
+        { "id": "ord-018", "situation": "eSIM 즉시 발급", "text": "eSIM은 결제 즉시 발급돼요. 배송을 기다릴 필요 없이 바로 설치하세요.", "tone": "확인", "component": "결제 완료" },
+        { "id": "ord-019", "situation": "알림톡 발송 완료", "text": "카카오톡 알림톡으로 QR코드와 설치 안내를 보내드렸어요.", "tone": "확인", "component": "발송 알림" },
+        { "id": "ord-020", "situation": "이메일 바우처 발송", "text": "이메일로도 바우처를 보내드렸어요. 스팸함도 확인해 주세요.", "tone": "안내", "component": "발송 알림" }
       ]
     },
     "delivery": {
@@ -122,7 +146,19 @@
         { "id": "esm-007", "situation": "eSIM 데이터 충전", "text": "데이터가 부족하면 언제든 충전할 수 있어요. 추가 용량을 선택해 주세요.", "tone": "안내", "component": "충전 페이지" },
         { "id": "esm-008", "situation": "eSIM 삭제 안내", "text": "여행이 끝나면 eSIM을 삭제해도 돼요. 설정 > 셀룰러에서 제거할 수 있어요.", "tone": "안내", "component": "가이드" },
         { "id": "esm-009", "situation": "eSIM 미지원 기기", "text": "이 기기는 eSIM을 지원하지 않아요. 실물 유심을 추천드려요.", "tone": "안내", "component": "안내 모달" },
-        { "id": "esm-010", "situation": "eSIM 데이터 사용량 확인", "text": "현재 데이터 사용량을 확인해 보세요. 남은 용량도 함께 볼 수 있어요.", "tone": "안내", "component": "마이페이지" }
+        { "id": "esm-010", "situation": "eSIM 데이터 사용량 확인", "text": "현재 데이터 사용량을 확인해 보세요. 남은 용량도 함께 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "esm-011", "situation": "iPhone eSIM 설치 Step 1", "text": "QR코드를 스캔하면 '셀룰러 요금제 추가' 화면이 나타나요. '추가'를 눌러주세요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-012", "situation": "iPhone 기본회선 설정", "text": "기본 회선은 '메인'을 선택해 주세요. 기존 번호로 전화와 문자를 받을 수 있어요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-013", "situation": "데이터 전환 허용 OFF", "text": "'셀룰러 데이터 전환 허용'을 꺼주세요. 켜두면 기존 요금제에서 데이터가 차감될 수 있어요.", "tone": "주의", "component": "설치 가이드" },
+        { "id": "esm-014", "situation": "메인 회선 로밍 OFF", "text": "메인 회선의 '데이터 로밍'은 반드시 꺼주세요. 켜두면 로밍 요금이 부과돼요.", "tone": "주의", "component": "설치 가이드" },
+        { "id": "esm-015", "situation": "보조 회선 로밍 ON", "text": "유심사 eSIM 회선의 '데이터 로밍'을 켜주세요. 이걸 켜야 현지에서 데이터를 쓸 수 있어요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-016", "situation": "QR 확인 방법", "text": "카카오톡 알림톡, 이메일, 또는 유심사 앱 '내 데이터'에서 QR코드를 확인할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-017", "situation": "eSIM 재등록 불가 안내", "text": "eSIM은 한 번 등록하면 다른 폰으로 옮길 수 없어요. 폰 변경 시 새로 구매해야 해요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "esm-018", "situation": "캐리어락/SIM락 주의", "text": "캐리어락 또는 SIM락이 걸린 기기에서는 eSIM이 작동하지 않을 수 있어요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "esm-019", "situation": "중국/홍콩 기기 제한", "text": "중국·홍콩에서 출시된 기기는 국가 정책으로 eSIM 사용이 불가해요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "esm-020", "situation": "5G → LTE 전환 안내", "text": "연결이 불안정하면 네트워크 모드를 LTE 우선으로 변경해 보세요. 더 안정적으로 연결돼요.", "tone": "안내", "component": "트러블슈팅" },
+        { "id": "esm-021", "situation": "eSIM 사전 설치 안내", "text": "출발 전에 미리 설치하고, 현지 도착 후 데이터 로밍만 켜면 바로 사용할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-022", "situation": "APN 자동 설정 실패", "text": "APN이 자동 설정되지 않았다면, 알림톡에 있는 정보로 직접 입력해 주세요. 대소문자를 정확히 맞춰야 해요.", "tone": "안내", "component": "트러블슈팅" }
       ]
     },
     "travel": {
@@ -141,7 +177,13 @@
         { "id": "trv-011", "situation": "유효기간 안내", "text": "첫 데이터 사용일부터 {days}일간 이용할 수 있어요.", "tone": "안내", "component": "상품 상세" },
         { "id": "trv-012", "situation": "시차 안내", "text": "현지 시간은 한국보다 {diff}시간 느려요. 유심 유효기간은 현지 시간 기준이에요.", "tone": "설명", "component": "여행 정보" },
         { "id": "trv-013", "situation": "핫스팟 사용 안내", "text": "핫스팟(테더링)으로 다른 기기에서도 데이터를 함께 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" },
-        { "id": "trv-014", "situation": "귀국 후 원래 유심 복구", "text": "여행이 끝나면 기존 유심으로 다시 바꿔 넣으면 돼요. 재부팅하면 자동 연결!", "tone": "안내", "component": "가이드" }
+        { "id": "trv-014", "situation": "귀국 후 원래 유심 복구", "text": "여행이 끝나면 기존 유심으로 다시 바꿔 넣으면 돼요. 재부팅하면 자동 연결!", "tone": "안내", "component": "가이드" },
+        { "id": "trv-015", "situation": "데이터 충전 안내 (로밍망)", "text": "로밍망은 여행 중 데이터가 부족하면 앱에서 바로 충전할 수 있어요.", "tone": "안내", "component": "충전 안내" },
+        { "id": "trv-016", "situation": "데이터 충전 불가 (로컬망)", "text": "로컬망은 추가 충전이 불가해요. 충분한 데이터 요금제를 미리 선택하는 걸 추천해요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "trv-017", "situation": "장기 체류 요금제", "text": "유학이나 출장으로 오래 머무시나요? 30일·60일·90일 장기 요금제를 확인해 보세요.", "tone": "추천", "component": "상품 추천" },
+        { "id": "trv-018", "situation": "외교부 긴급연락", "text": "긴급 상황 시 앱에서 외교부 콜센터나 119에 바로 연결할 수 있어요.", "tone": "안내", "component": "긴급 페이지" },
+        { "id": "trv-019", "situation": "화상회의 데이터 안내", "text": "화상회의는 시간당 약 1.5GB가 필요해요. 출장이라면 무제한 요금제를 추천해요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-020", "situation": "여행 체크리스트 완료", "text": "eSIM 설치 완료, 데이터 로밍 설정 완료! 즐거운 여행 되세요.", "tone": "축하", "component": "체크리스트" }
       ]
     },
     "account": {
@@ -175,7 +217,13 @@
         { "id": "sup-009", "situation": "상담 대기 안내", "text": "현재 상담 대기가 많아요. 예상 대기 시간은 약 {time}분이에요.", "tone": "안내", "component": "채팅" },
         { "id": "sup-010", "situation": "상담 종료", "text": "상담이 종료됐어요. 더 궁금한 점이 있으면 언제든 문의해 주세요!", "tone": "친근", "component": "채팅" },
         { "id": "sup-011", "situation": "불편 접수 감사", "text": "알려주셔서 감사해요. 빠르게 확인하고 개선할게요.", "tone": "사과", "component": "확인 페이지" },
-        { "id": "sup-012", "situation": "긴급 장애 공지", "text": "일부 서비스에 접속이 어려운 상황이에요. 빠르게 복구하고 있어요.", "tone": "사과", "component": "공지 배너" }
+        { "id": "sup-012", "situation": "긴급 장애 공지", "text": "일부 서비스에 접속이 어려운 상황이에요. 빠르게 복구하고 있어요.", "tone": "사과", "component": "공지 배너" },
+        { "id": "sup-013", "situation": "24시간 고객센터 안내", "text": "유심사 고객센터는 365일 24시간 운영해요. 언제든 편하게 문의하세요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-014", "situation": "유심사케어 보상 안내", "text": "통신 장애로 불편을 겪으셨다면 유심사케어로 최대 30만원까지 보상받을 수 있어요.", "tone": "안내", "component": "보상 안내" },
+        { "id": "sup-015", "situation": "유심사케어 자동 가입", "text": "3GB 이상 데이터 상품 구매 시 유심사케어에 자동으로 가입돼요.", "tone": "확인", "component": "구매 완료" },
+        { "id": "sup-016", "situation": "eSIM 환불 안내", "text": "eSIM은 설치 전이라면 전액 환불이 가능해요. 설치 후에는 환불이 어려워요.", "tone": "안내", "component": "환불 안내" },
+        { "id": "sup-017", "situation": "물리유심 교환", "text": "수령 후 7일 이내, 개통 전 상품만 교환할 수 있어요.", "tone": "안내", "component": "교환 안내" },
+        { "id": "sup-018", "situation": "연결 문제 자가진단", "text": "1. 재부팅 → 2. APN 확인 → 3. LTE 모드 전환. 안 되면 고객센터로 문의해 주세요.", "tone": "안내", "component": "트러블슈팅" }
       ]
     },
     "system": {
@@ -210,7 +258,30 @@
         { "id": "mkt-007", "situation": "골프여행 시즌", "text": "골프 여행에 딱! 현지에서 구글맵과 스코어 앱을 자유롭게 쓰세요.", "tone": "추천", "component": "배너" },
         { "id": "mkt-008", "situation": "졸업여행 시즌", "text": "졸업여행은 유심사와 함께! 친구들과 사진도 바로 공유하세요.", "tone": "친근", "component": "배너" },
         { "id": "mkt-009", "situation": "신학기 유학생", "text": "유학 준비 중이라면, 장기 요금제로 데이터 걱정 없이 공부하세요.", "tone": "안내", "component": "배너" },
-        { "id": "mkt-010", "situation": "출장 비즈니스", "text": "해외 출장에 안정적인 데이터! 로컬망으로 화상회의도 끊김 없이.", "tone": "설명", "component": "배너" }
+        { "id": "mkt-010", "situation": "출장 비즈니스", "text": "해외 출장에 안정적인 데이터! 로컬망으로 화상회의도 끊김 없이.", "tone": "설명", "component": "배너" },
+        { "id": "mkt-011", "situation": "신규가입 혜택", "text": "지금 가입하면 즉시 2종 혜택! 첫 주문 할인 쿠폰을 받아보세요.", "tone": "긴급", "component": "팝업" },
+        { "id": "mkt-012", "situation": "3% 무제한 적립", "text": "모든 주문에서 3% 무제한 적립! 적립금은 다음 주문에 바로 사용할 수 있어요.", "tone": "추천", "component": "혜택 배너" },
+        { "id": "mkt-013", "situation": "출석 체크 적립", "text": "매일 출석하면 100원 적립! 한 달 개근하면 보너스 1,000원까지.", "tone": "친근", "component": "앱 이벤트" },
+        { "id": "mkt-014", "situation": "쿠폰 적용 안내", "text": "결제 단계에서 '쿠폰 선택'을 누르면 할인 금액이 자동 반영돼요.", "tone": "안내", "component": "결제 안내" },
+        { "id": "mkt-015", "situation": "USIM 무료 배송", "text": "물리유심은 무료 배송! 오후 2시 전 주문하면 당일 출발해요.", "tone": "확인", "component": "배송 안내" },
+        { "id": "mkt-016", "situation": "인플루언서 할인", "text": "클릭 한 번으로 자동 적용! 모든 상품 최대 20% 할인.", "tone": "긴급", "component": "이벤트 배너" },
+        { "id": "mkt-017", "situation": "앱 다운로드 유도", "text": "유심사 앱으로 더 빠르고 편리하게! 원클릭 eSIM 설치도 앱에서만.", "tone": "추천", "component": "배너" },
+        { "id": "mkt-018", "situation": "적립금 사용 안내", "text": "보유 적립금 {point}원을 주문 시 바로 사용할 수 있어요.", "tone": "안내", "component": "결제 안내" }
+      ]
+    },
+    "app": {
+      "label": "앱/내 데이터",
+      "entries": [
+        { "id": "app-001", "situation": "내 데이터 조회", "text": "구매한 eSIM과 유심을 한눈에 확인하세요. 사용량도 실시간으로 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "app-002", "situation": "설치 및 활성화 버튼", "text": "'설치 및 활성화' 버튼을 누르면 QR코드와 설치 가이드를 확인할 수 있어요.", "tone": "안내", "component": "내 데이터" },
+        { "id": "app-003", "situation": "데이터 사용량 조회", "text": "현재 {used}GB / {total}GB 사용 중이에요.", "tone": "안내", "component": "사용량 카드" },
+        { "id": "app-004", "situation": "데이터 충전하기", "text": "데이터가 부족하면 여기서 바로 충전하세요. 충전 즉시 반영돼요.", "tone": "안내", "component": "충전 버튼" },
+        { "id": "app-005", "situation": "데이터 기간 연장", "text": "유효기간을 연장할 수 있어요. 남은 데이터도 함께 유지돼요.", "tone": "안내", "component": "연장 버튼" },
+        { "id": "app-006", "situation": "무료 전화 안내", "text": "앱에서 현지 무료전화를 이용할 수 있어요. 긴급 연락에 활용하세요.", "tone": "안내", "component": "무료전화" },
+        { "id": "app-007", "situation": "푸시 알림 수신", "text": "여행지 도착, 데이터 소진 임박 등 중요한 알림을 받아보세요.", "tone": "추천", "component": "알림 설정" },
+        { "id": "app-008", "situation": "원클릭 설치 안내", "text": "클릭 한 번으로 eSIM이 설치돼요. QR코드 스캔 없이 더 간편하게!", "tone": "추천", "component": "설치 버튼" },
+        { "id": "app-009", "situation": "앱 업데이트 알림", "text": "새로운 기능이 추가됐어요! 업데이트하면 원클릭 설치를 이용할 수 있어요.", "tone": "안내", "component": "업데이트 배너" },
+        { "id": "app-010", "situation": "긴급 SOS 연결", "text": "긴급 상황 시 외교부 콜센터(+82-2-3210-0404) 또는 119에 바로 연결돼요.", "tone": "안내", "component": "긴급 버튼" }
       ]
     }
   },
