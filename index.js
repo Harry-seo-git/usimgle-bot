@@ -19,6 +19,23 @@ const app = new App({
   receiver,
 });
 
+// --- 알림 채널 설정 (선택) ---
+const notifyChannelId = process.env.NOTIFICATION_CHANNEL_ID || '';
+
+async function sendNotification(blocks) {
+  if (!notifyChannelId) return;
+  try {
+    await app.client.chat.postMessage({
+      token: process.env.SLACK_BOT_TOKEN,
+      channel: notifyChannelId,
+      blocks,
+      text: '새 UX 문구 알림',
+    });
+  } catch (err) {
+    console.error('알림 전송 실패:', err.message);
+  }
+}
+
 // --- 구글시트 연동 (선택) ---
 const sheetEnabled = !!process.env.GOOGLE_API_URL;
 const getRows = (q) =>
@@ -177,11 +194,11 @@ app.command('/uxr', async ({ command, ack, respond }) => {
         break;
       case '등록':
       case 'add':
-        await handleAdd(args, respond);
+        await handleAdd(args, respond, command.user_id);
         break;
       case '수정':
       case 'edit':
-        await handleEdit(args, respond);
+        await handleEdit(args, respond, command.user_id);
         break;
       case '히스토리':
       case 'history':
@@ -521,7 +538,7 @@ async function handleFeedback(text, respond) {
 }
 
 // --- 핸들러: 등록 ---
-async function handleAdd(text, respond) {
+async function handleAdd(text, respond, userId) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
@@ -551,7 +568,7 @@ async function handleAdd(text, respond) {
   const now = new Date().toISOString();
   const newEntry = {
     id: newId, situation: uxText.substring(0, 20), text: uxText, tone, component,
-    history: [{ action: '등록', date: now, by: 'slack', detail: '최초 등록' }],
+    history: [{ action: '등록', date: now, by: userId || 'slack', detail: '최초 등록' }],
   };
 
   // 1) JSON에 저장
@@ -573,6 +590,32 @@ async function handleAdd(text, respond) {
       // 시트 실패해도 JSON엔 이미 저장됨
     }
   }
+
+  // 알림 채널에 신규 문구 알림 전송
+  sendNotification([
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: '새 UX 문구가 등록됐어요!' },
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*ID:* \`${newId}\`` },
+        { type: 'mrkdwn', text: `*카테고리:* ${category}` },
+        { type: 'mrkdwn', text: `*톤:* ${tone}` },
+        { type: 'mrkdwn', text: `*컴포넌트:* ${component}` },
+      ],
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*문구:* "${uxText}"` },
+    },
+    {
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `등록자: <@${userId || 'unknown'}> | ${new Date().toLocaleDateString('ko-KR')}` }],
+    },
+  ]);
 
   return respond({
     response_type: 'in_channel',
@@ -603,7 +646,7 @@ async function handleAdd(text, respond) {
 }
 
 // --- 핸들러: 수정 ---
-async function handleEdit(text, respond) {
+async function handleEdit(text, respond, userId) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
@@ -655,7 +698,7 @@ async function handleEdit(text, respond) {
   found.history.push({
     action: '수정',
     date: new Date().toISOString(),
-    by: 'slack',
+    by: userId || 'slack',
     field,
     from: oldValue,
     to: newValue,
@@ -676,6 +719,31 @@ async function handleEdit(text, respond) {
       // 시트 실패해도 JSON엔 이미 저장됨
     }
   }
+
+  // 알림 채널에 수정 알림 전송
+  sendNotification([
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: 'UX 문구가 수정됐어요!' },
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*ID:* \`${id}\`` },
+        { type: 'mrkdwn', text: `*카테고리:* ${catKey}` },
+        { type: 'mrkdwn', text: `*수정 필드:* ${field}` },
+      ],
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*이전:* ~${oldValue}~\n*변경:* "${newValue}"` },
+    },
+    {
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `수정자: <@${userId || 'unknown'}> | ${new Date().toLocaleDateString('ko-KR')}` }],
+    },
+  ]);
 
   return respond({
     response_type: 'in_channel',
