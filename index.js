@@ -574,14 +574,20 @@ async function handleAdd(text, respond, userId) {
 
   const [category, uxText, tone = '안내', component = '미정'] = parts;
 
-  // ID 자동 생성
+  // ID 자동 생성 (삭제 후에도 중복되지 않도록 기존 최대 번호 기반)
   const catKey = Object.keys(guide.categories).find(
     (k) => guide.categories[k].label === category || k === category
   ) || category;
   const catData = guide.categories[catKey];
-  const existingCount = catData ? catData.entries.length : 0;
   const prefix = catKey.substring(0, 3);
-  const newId = `${prefix}-${String(existingCount + 1).padStart(3, '0')}`;
+  let maxNum = 0;
+  if (catData) {
+    for (const entry of catData.entries) {
+      const match = entry.id.match(/-(\d+)$/);
+      if (match) maxNum = Math.max(maxNum, parseInt(match[1], 10));
+    }
+  }
+  const newId = `${prefix}-${String(maxNum + 1).padStart(3, '0')}`;
 
   const now = new Date().toISOString();
   const newEntry = {
@@ -831,6 +837,13 @@ async function handleDelete(text, respond, userId) {
     saveGuide();
   } catch (err) {
     return respond({ response_type: 'ephemeral', text: `JSON 저장 오류: ${err.message}` });
+  }
+
+  // 구글시트에서도 삭제
+  if (sheetEnabled) {
+    try {
+      await axios.post(process.env.GOOGLE_API_URL, { _action: 'delete', id });
+    } catch (_) { /* 시트 실패해도 JSON엔 이미 삭제됨 */ }
   }
 
   // 알림 채널에 삭제 알림
@@ -1139,13 +1152,15 @@ async function handleExport(format, respond) {
     });
   }
 
-  // 기본: CSV 포맷
+  // 기본: CSV 포맷 (모든 필드 따옴표 감싸기)
   const csvHeader = 'ID,카테고리,카테고리키,상황,문구,톤,컴포넌트';
   const csvRows = allEntries.map((e) =>
-    `${e.id},${e.category},${e.categoryKey},"${e.situation.replace(/"/g, '""')}","${e.text.replace(/"/g, '""')}",${e.tone},${e.component}`
+    `"${e.id}","${e.category}","${e.categoryKey}","${e.situation.replace(/"/g, '""')}","${e.text.replace(/"/g, '""')}","${e.tone}","${e.component}"`
   );
   const csv = [csvHeader, ...csvRows].join('\n');
-  const preview = [csvHeader, ...csvRows.slice(0, 8)].join('\n');
+  const previewCount = Math.min(8, csvRows.length);
+  const preview = [csvHeader, ...csvRows.slice(0, previewCount)].join('\n');
+  const remainCount = csvRows.length - previewCount;
 
   return respond({
     response_type: 'ephemeral',
@@ -1156,7 +1171,7 @@ async function handleExport(format, respond) {
       },
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: `\`\`\`${preview}\n... (외 ${csvRows.length - 8}건)\`\`\`` },
+        text: { type: 'mrkdwn', text: `\`\`\`${preview}${remainCount > 0 ? `\n... (외 ${remainCount}건)` : ''}\`\`\`` },
       },
       { type: 'divider' },
       {
@@ -1334,6 +1349,21 @@ async function handlePrinciples(respond) {
   });
 }
 
+// --- 공통: 말투 검사 패턴 ---
+const PASSIVE_PATTERNS = [
+  { from: '되었습니다', to: '됐어요' },
+  { from: '하였습니다', to: '했어요' },
+  { from: '됩니다', to: '돼요' },
+  { from: '합니다', to: '해요' },
+  { from: '십시오', to: '세요' },
+  { from: '바랍니다', to: '주세요' },
+  { from: '없습니다', to: '없어요' },
+  { from: '있습니다', to: '있어요' },
+  { from: '입니다', to: '이에요' },
+];
+
+const NEGATIVE_PATTERNS = [/할 수 없/, /불가능/, /하지 마/, /않으면/, /못합니다/, /안됩니다/, /금지/];
+
 // --- 핸들러: 문구 일관성 검사 ---
 async function handleCheck(text, respond) {
   if (!text) {
@@ -1353,35 +1383,15 @@ async function handleCheck(text, respond) {
   }
 
   // 2. 수동태/딱딱한 말투 체크
-  const passivePatterns = [
-    { pattern: /되었습니다/g, fix: '됐어요' },
-    { pattern: /하였습니다/g, fix: '했어요' },
-    { pattern: /됩니다/g, fix: '돼요' },
-    { pattern: /합니다/g, fix: '해요' },
-    { pattern: /십시오/g, fix: '세요' },
-    { pattern: /바랍니다/g, fix: '주세요' },
-    { pattern: /없습니다/g, fix: '없어요' },
-    { pattern: /있습니다/g, fix: '있어요' },
-    { pattern: /입니다/g, fix: '이에요' },
-  ];
-  for (const { pattern, fix } of passivePatterns) {
-    if (pattern.test(text)) {
-      issues.push(`"${pattern.source}" → "${fix}" (해요체로 변경)`);
-      suggestions.push({ from: pattern.source, to: fix });
+  for (const { from, to } of PASSIVE_PATTERNS) {
+    if (text.includes(from)) {
+      issues.push(`"${from}" → "${to}" (해요체로 변경)`);
+      suggestions.push({ from, to });
     }
   }
 
   // 3. 부정문 체크
-  const negativePatterns = [
-    /할 수 없/,
-    /불가능/,
-    /하지 마/,
-    /않으면/,
-    /못합니다/,
-    /안됩니다/,
-    /금지/,
-  ];
-  for (const p of negativePatterns) {
+  for (const p of NEGATIVE_PATTERNS) {
     if (p.test(text)) {
       issues.push(`부정 표현 "${text.match(p)[0]}" 감지 → 긍정문으로 변경 권장`);
     }
@@ -1408,7 +1418,7 @@ async function handleCheck(text, respond) {
   // 자동 수정 문구 생성
   let autoFixed = text;
   for (const { from, to } of suggestions) {
-    autoFixed = autoFixed.replace(new RegExp(from, 'g'), to);
+    autoFixed = autoFixed.split(from).join(to);
   }
 
   const blocks = [
@@ -1607,27 +1617,13 @@ async function handleBulkCheck(text, respond) {
     return respond({ response_type: 'ephemeral', text: '최소 2개 이상의 문구를 `/`로 구분해 주세요.' });
   }
 
-  const passivePatterns = [
-    { pattern: /되었습니다/, fix: '됐어요' },
-    { pattern: /하였습니다/, fix: '했어요' },
-    { pattern: /됩니다/, fix: '돼요' },
-    { pattern: /합니다/, fix: '해요' },
-    { pattern: /십시오/, fix: '세요' },
-    { pattern: /바랍니다/, fix: '주세요' },
-    { pattern: /없습니다/, fix: '없어요' },
-    { pattern: /있습니다/, fix: '있어요' },
-    { pattern: /입니다/, fix: '이에요' },
-  ];
-
-  const negativePatterns = [/할 수 없/, /불가능/, /하지 마/, /않으면/, /못합니다/, /안됩니다/];
-
   const results = phrases.map((phrase) => {
     const issues = [];
     if (phrase.length > 40) issues.push('40자 초과');
-    for (const { pattern } of passivePatterns) {
-      if (pattern.test(phrase)) { issues.push('해요체 필요'); break; }
+    for (const { from } of PASSIVE_PATTERNS) {
+      if (phrase.includes(from)) { issues.push('해요체 필요'); break; }
     }
-    for (const p of negativePatterns) {
+    for (const p of NEGATIVE_PATTERNS) {
       if (p.test(phrase)) { issues.push('부정문'); break; }
     }
     const passed = issues.length === 0;
@@ -1792,74 +1788,106 @@ async function handleStats(respond) {
 
 // --- 핸들러: 도움말 ---
 async function handleHelp(respond) {
+  // 전체 문구 수 계산
+  let totalEntries = 0;
+  for (const cat of Object.values(guide.categories)) {
+    totalEntries += cat.entries.length;
+  }
+  const catCount = Object.keys(guide.categories).length;
+
   return respond({
     response_type: 'ephemeral',
     blocks: [
       {
         type: 'header',
-        text: { type: 'plain_text', text: '유심사 UX 라이팅 봇 도움말' },
+        text: { type: 'plain_text', text: 'UX Writing Bot' },
       },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: [
-            '*기본*',
-            '`/uxr 검색 [키워드]` — 키워드로 UX 문구 검색',
-            '  예: `/uxr 검색 결제`  `/uxr 검색 eSIM`',
-            '`/uxr 카테고리 [이름]` — 카테고리별 문구 조회',
-            '  예: `/uxr 카테고리 주문`  `/uxr 카테고리` (목록)',
-            '`/uxr 톤 [톤이름]` — 톤 가이드 조회',
-            '  예: `/uxr 톤 친근`  `/uxr 톤 사과`',
-            '`/uxr 원칙` — 라이팅 원칙 조회',
-            '`/uxr 통계` — 가이드 현황 대시보드',
-            '`/uxr 랜덤` — 오늘의 UX 라이팅 팁',
-          ].join('\n'),
+          text: `유심사 UX 라이팅 가이드 봇이에요.\n현재 *${catCount}개 카테고리*, *${totalEntries}건의 문구*가 등록되어 있어요.`,
         },
       },
+      { type: 'divider' },
+      // --- 검색 & 조회 ---
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: [
-            '*AI 기능*',
-            '`/uxr 추천 [상황설명]` — AI가 상황에 맞는 문구 제안',
-            '  예: `/uxr 추천 사용자가 잘못된 이메일을 입력했을 때`',
-            '`/uxr 피드백 [문구]` — 기존 문구의 개선점 분석',
-            '  예: `/uxr 피드백 오류가 발생했습니다`',
-            '`/uxr 비교 [문구A] vs [문구B]` — 두 문구 비교 분석',
-            '  예: `/uxr 비교 결제가 처리되었습니다 vs 결제를 완료했어요`',
-            '`/uxr 번역 [문구 또는 ID]` — 다국어 번역',
-            '  예: `/uxr 번역 ord-004`  `/uxr 번역 en 결제가 완료됐어요`',
-          ].join('\n'),
+          text: '*:mag: 검색 & 조회*',
         },
       },
       {
         type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: '`/uxr 검색 결제`\n키워드로 문구 검색' },
+          { type: 'mrkdwn', text: '`/uxr 카테고리 주문`\n카테고리별 문구 조회' },
+          { type: 'mrkdwn', text: '`/uxr 톤 친근`\n톤 가이드 조회' },
+          { type: 'mrkdwn', text: '`/uxr 원칙`\n라이팅 원칙 조회' },
+        ],
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: '`/uxr 통계`\n가이드 현황 대시보드' },
+          { type: 'mrkdwn', text: '`/uxr 랜덤`\n오늘의 UX 팁 + 문구' },
+          { type: 'mrkdwn', text: '`/uxr 용어 eSIM`\n브랜드 용어집 조회' },
+          { type: 'mrkdwn', text: '`/uxr 히스토리 ord-001`\n문구 변경 이력' },
+        ],
+      },
+      { type: 'divider' },
+      // --- AI 기능 ---
+      {
+        type: 'section',
         text: {
           type: 'mrkdwn',
-          text: [
-            '*검사/관리*',
-            '`/uxr 검사 [문구]` — 가이드라인 일관성 검사',
-            '  예: `/uxr 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
-            '`/uxr 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
-            '  예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오/배송 완료됐어요`',
-            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
-            '  예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
-            '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정',
-            '  예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`',
-            '`/uxr 삭제 [ID]` — 문구 삭제',
-            '  예: `/uxr 삭제 ord-005`',
-            '`/uxr 중복검사 [문구]` — 등록 전 유사 문구 탐지',
-            '  예: `/uxr 중복검사 결제가 완료됐어요`',
-            '`/uxr 히스토리 [ID]` — 문구 변경 이력 조회',
-            '  예: `/uxr 히스토리 ord-001`',
-            '`/uxr 용어 [용어]` — 브랜드 용어집 조회',
-            '  예: `/uxr 용어 eSIM`  `/uxr 용어` (전체)',
-            '`/uxr 내보내기 [json]` — 전체 문구 CSV/JSON 내보내기',
-            '  예: `/uxr 내보내기`  `/uxr 내보내기 json`',
-          ].join('\n'),
+          text: '*:sparkles: AI 기능*',
         },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: '`/uxr 추천 [상황]`\nAI 문구 제안 (채택/수정)' },
+          { type: 'mrkdwn', text: '`/uxr 피드백 [문구]`\n문구 개선점 분석' },
+          { type: 'mrkdwn', text: '`/uxr 비교 A vs B`\n두 문구 비교 분석' },
+          { type: 'mrkdwn', text: '`/uxr 번역 [문구/ID]`\n다국어 번역' },
+        ],
+      },
+      { type: 'divider' },
+      // --- 검사 ---
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*:white_check_mark: 검사*',
+        },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: '`/uxr 검사 [문구]`\n가이드라인 일관성 검사' },
+          { type: 'mrkdwn', text: '`/uxr 벌크검사 A/B/C`\n여러 문구 한번에 검사' },
+          { type: 'mrkdwn', text: '`/uxr 중복검사 [문구]`\n유사 문구 탐지' },
+        ],
+      },
+      { type: 'divider' },
+      // --- 관리 ---
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*:pencil2: 문구 관리*',
+        },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: '`/uxr 등록 카테고리|문구|톤|컴포넌트`\n새 문구 등록' },
+          { type: 'mrkdwn', text: '`/uxr 수정 ID|필드|새값`\n기존 문구 수정' },
+          { type: 'mrkdwn', text: '`/uxr 삭제 ID`\n문구 삭제' },
+          { type: 'mrkdwn', text: '`/uxr 내보내기 [json]`\nCSV/JSON 내보내기' },
+        ],
       },
       { type: 'divider' },
       {
@@ -1867,7 +1895,11 @@ async function handleHelp(respond) {
         elements: [
           {
             type: 'mrkdwn',
-            text: `카테고리: 온보딩 · 상품탐색 · 주문/결제 · 배송 · eSIM · 여행/로밍 · 개통 · 계정 · 고객지원 · 시스템 · 마케팅${notifyChannelId ? `\n알림 채널: <#${notifyChannelId}> (신규 등록/수정 알림 + 매주 월요일 주간 리포트)` : ''}`,
+            text: [
+              `*카테고리:* ${Object.values(guide.categories).map((c) => c.label).join(' · ')}`,
+              notifyChannelId ? `*알림:* <#${notifyChannelId}> (등록/수정/삭제 알림 + 매주 월요일 주간 리포트)` : '',
+              '*TIP:* `/uxr [키워드]`만 입력해도 바로 검색돼요!',
+            ].filter(Boolean).join('\n'),
           },
         ],
       },
@@ -2084,12 +2116,11 @@ async function sendWeeklyReport() {
   }
 }
 
-// 매주 월요일 오전 9시 (KST) 자동 발송 — cron은 서버 시간 기준
-// KST(UTC+9) → UTC 기준 월요일 00:00 = '0 0 * * 1'
-cron.schedule('0 0 * * 1', () => {
+// 매주 월요일 오전 9시 (KST) 자동 발송
+cron.schedule('0 9 * * 1', () => {
   console.log('주간 UX 리포트 생성 시작...');
   sendWeeklyReport();
-});
+}, { timezone: 'Asia/Seoul' });
 
 // --- 서버 실행 ---
 const port = process.env.PORT || 3000;
