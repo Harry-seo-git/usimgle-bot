@@ -1813,81 +1813,101 @@ async function handleHelp(respond) {
       // --- 검색 & 조회 ---
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '*:mag: 검색 & 조회*',
-        },
+        text: { type: 'mrkdwn', text: '*:mag: 검색 & 조회*' },
       },
       {
         type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: '`/uxr 검색 [키워드]`\n키워드로 문구 검색\n_예: `/uxr 검색 결제`_' },
-          { type: 'mrkdwn', text: '`/uxr 카테고리 [이름]`\n카테고리별 문구 조회\n_예: `/uxr 카테고리 주문`_' },
-          { type: 'mrkdwn', text: '`/uxr 톤 [톤이름]`\n톤 가이드 조회\n_예: `/uxr 톤 친근`_' },
-          { type: 'mrkdwn', text: '`/uxr 원칙`\n라이팅 원칙 전체 조회' },
-        ],
+        text: { type: 'mrkdwn', text: '`/uxr 검색 [키워드]` — 키워드로 문구 검색\n_예: `/uxr 검색 결제`  `/uxr 검색 eSIM`_' },
       },
       {
         type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: '`/uxr 통계`\n가이드 현황 대시보드' },
-          { type: 'mrkdwn', text: '`/uxr 랜덤`\n오늘의 UX 팁 + 문구' },
-          { type: 'mrkdwn', text: '`/uxr 용어 [용어]`\n브랜드 용어집 조회\n_예: `/uxr 용어 eSIM`_' },
-          { type: 'mrkdwn', text: '`/uxr 히스토리 [ID]`\n문구 변경 이력 조회\n_예: `/uxr 히스토리 ord-001`_' },
-        ],
+        text: { type: 'mrkdwn', text: '`/uxr 카테고리 [이름]` — 카테고리별 문구 조회\n_예: `/uxr 카테고리 주문`  `/uxr 카테고리` (전체 목록)_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 톤 [톤이름]` — 톤 가이드 조회\n_예: `/uxr 톤 친근`  `/uxr 톤 사과`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 원칙` — 라이팅 원칙 전체 조회' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 통계` — 카테고리/톤/컴포넌트 현황 대시보드' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 랜덤` — 오늘의 UX 라이팅 팁 + 랜덤 문구' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 용어 [용어]` — 브랜드 용어집 조회\n_예: `/uxr 용어 eSIM`  `/uxr 용어` (전체 목록)_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 히스토리 [ID]` — 문구 변경 이력 조회\n_예: `/uxr 히스토리 ord-001`_' },
       },
       { type: 'divider' },
       // --- AI 기능 ---
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '*:sparkles: AI 기능*',
-        },
+        text: { type: 'mrkdwn', text: '*:sparkles: AI 기능*' },
       },
       {
         type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: '`/uxr 추천 [상황]`\nAI 문구 제안 (채택/수정)\n_예: `/uxr 추천 이메일 형식이 잘못됐을 때`_' },
-          { type: 'mrkdwn', text: '`/uxr 피드백 [문구]`\n문구 개선점 분석\n_예: `/uxr 피드백 오류가 발생했습니다`_' },
-          { type: 'mrkdwn', text: '`/uxr 비교 [A] vs [B]`\n두 문구 비교 분석\n_예: `/uxr 비교 처리되었습니다 vs 완료했어요`_' },
-          { type: 'mrkdwn', text: '`/uxr 번역 [문구/ID]`\n다국어 번역 (en/ja/zh)\n_예: `/uxr 번역 ord-004`_' },
-        ],
+        text: { type: 'mrkdwn', text: '`/uxr 추천 [상황설명]` — AI가 상황에 맞는 문구 3개 제안\n_예: `/uxr 추천 사용자가 잘못된 이메일을 입력했을 때`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 피드백 [문구]` — 기존 문구의 개선점 분석\n_예: `/uxr 피드백 오류가 발생했습니다`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 비교 [문구A] vs [문구B]` — 두 문구 비교 분석\n_예: `/uxr 비교 결제가 처리되었습니다 vs 결제를 완료했어요`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 번역 [문구 또는 ID]` — 다국어 번역 (en/ja/zh/es/fr)\n_예: `/uxr 번역 ord-004`  `/uxr 번역 en 결제가 완료됐어요`_' },
       },
       { type: 'divider' },
       // --- 검사 ---
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '*:white_check_mark: 검사*',
-        },
+        text: { type: 'mrkdwn', text: '*:white_check_mark: 검사*' },
       },
       {
         type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: '`/uxr 검사 [문구]`\n가이드라인 일관성 검사\n_예: `/uxr 검사 결제 오류가 발생하였습니다`_' },
-          { type: 'mrkdwn', text: '`/uxr 벌크검사 [A/B/C]`\n여러 문구 한번에 검사\n_예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오`_' },
-          { type: 'mrkdwn', text: '`/uxr 중복검사 [문구]`\n등록 전 유사 문구 탐지\n_예: `/uxr 중복검사 결제가 완료됐어요`_' },
-        ],
+        text: { type: 'mrkdwn', text: '`/uxr 검사 [문구]` — 가이드라인 일관성 검사 + AI 점수\n_예: `/uxr 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사\n_예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오/배송 완료됐어요`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 중복검사 [문구]` — 등록 전 유사 문구 탐지\n_예: `/uxr 중복검사 결제가 완료됐어요`_' },
       },
       { type: 'divider' },
       // --- 관리 ---
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '*:pencil2: 문구 관리*',
-        },
+        text: { type: 'mrkdwn', text: '*:pencil2: 문구 관리*' },
       },
       {
         type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: '`/uxr 등록 [카테고리|문구|톤|컴포넌트]`\n새 문구 등록\n_예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`_' },
-          { type: 'mrkdwn', text: '`/uxr 수정 [ID|필드|새값]`\n기존 문구 수정\n_예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`_' },
-          { type: 'mrkdwn', text: '`/uxr 삭제 [ID]`\n문구 삭제\n_예: `/uxr 삭제 ord-005`_' },
-          { type: 'mrkdwn', text: '`/uxr 내보내기 [json]`\nCSV/JSON 내보내기\n_예: `/uxr 내보내기` `/uxr 내보내기 json`_' },
-        ],
+        text: { type: 'mrkdwn', text: '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록\n_예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정\n_예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 삭제 [ID]` — 문구 삭제\n_예: `/uxr 삭제 ord-005`_' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '`/uxr 내보내기 [json]` — 전체 문구 CSV/JSON 내보내기\n_예: `/uxr 내보내기`  `/uxr 내보내기 json`_' },
       },
       { type: 'divider' },
       {
