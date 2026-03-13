@@ -141,8 +141,48 @@
         { "id": "mkt-001", "situation": "할인 이벤트", "text": "지금 주문하면 최대 30% 할인! 놓치지 마세요.", "tone": "긴급", "component": "배너" },
         { "id": "mkt-002", "situation": "리뷰 작성 유도", "text": "사용 후기를 남겨주세요! 포인트 500원을 드려요.", "tone": "친근", "component": "알림" },
         { "id": "mkt-003", "situation": "추천인 이벤트", "text": "친구에게 유심사를 소개하면 둘 다 3,000원 할인!", "tone": "친근", "component": "이벤트 페이지" },
-        { "id": "mkt-004", "situation": "장바구니 리마인더", "text": "담아둔 유심이 기다리고 있어요. 지금 주문하면 오늘 출발!", "tone": "친근", "component": "푸시 알림" }
+        { "id": "mkt-004", "situation": "장바구니 리마인더", "text": "담아둔 유심이 기다리고 있어요. 지금 주문하면 오늘 출발!", "tone": "친근", "component": "푸시 알림" },
+        { "id": "mkt-005", "situation": "여름휴가 시즌", "text": "여름 여행 준비 끝! 유심사로 해외 데이터 걱정 없이 떠나세요.", "tone": "친근", "component": "배너" },
+        { "id": "mkt-006", "situation": "연말연시 시즌", "text": "연말 해외여행, 유심사와 함께! 지금 주문하면 특별 할인.", "tone": "긴급", "component": "배너" },
+        { "id": "mkt-007", "situation": "골프여행 시즌", "text": "골프 여행에 딱! 현지에서 구글맵과 스코어 앱을 자유롭게 쓰세요.", "tone": "추천", "component": "배너" },
+        { "id": "mkt-008", "situation": "졸업여행 시즌", "text": "졸업여행은 유심사와 함께! 친구들과 사진도 바로 공유하세요.", "tone": "친근", "component": "배너" },
+        { "id": "mkt-009", "situation": "신학기 유학생", "text": "유학 준비 중이라면, 장기 요금제로 데이터 걱정 없이 공부하세요.", "tone": "안내", "component": "배너" },
+        { "id": "mkt-010", "situation": "출장 비즈니스", "text": "해외 출장에 안정적인 데이터! 로컬망으로 화상회의도 끊김 없이.", "tone": "설명", "component": "배너" }
       ]
+    }
+  },
+  "competitors": {
+    "description": "경쟁사 UX 문구 비교 (참고용)",
+    "services": {
+      "airalo": {
+        "name": "에어알로 (Airalo)",
+        "style": "글로벌 영문 기반, 심플하고 직관적",
+        "examples": [
+          { "situation": "구매 완료", "text": "Your eSIM is ready! Install it now.", "tone": "간결" },
+          { "situation": "설치 안내", "text": "Go to Settings > Cellular > Add eSIM", "tone": "직관적" },
+          { "situation": "데이터 소진", "text": "You've used all your data. Top up to stay connected.", "tone": "중립" }
+        ]
+      },
+      "roamingDokkaebi": {
+        "name": "로밍도깨비",
+        "style": "한국어 기반, 실용적이고 정보 중심",
+        "examples": [
+          { "situation": "구매 완료", "text": "구매가 완료되었습니다. QR코드를 확인해주세요.", "tone": "격식체" },
+          { "situation": "설치 안내", "text": "QR코드를 스캔하여 eSIM을 설치해주세요.", "tone": "격식체" },
+          { "situation": "데이터 소진", "text": "데이터를 모두 사용하였습니다.", "tone": "격식체" }
+        ]
+      },
+      "usimsa_advantage": "유심사는 해요체 + 다음 행동 안내로 친근하면서도 실용적인 UX 라이팅을 지향"
+    }
+  },
+  "seasonalGuide": {
+    "description": "시즌별 마케팅 문구 가이드",
+    "seasons": {
+      "summer": { "period": "6~8월", "keywords": ["여름휴가", "동남아", "유럽", "가족여행"], "tone": "친근" },
+      "winter": { "period": "12~2월", "keywords": ["연말", "크리스마스", "겨울여행", "스키"], "tone": "긴급" },
+      "spring": { "period": "3~5월", "keywords": ["졸업여행", "벚꽃", "일본", "골든위크"], "tone": "친근" },
+      "fall": { "period": "9~11월", "keywords": ["추석", "골프", "단풍", "출장"], "tone": "추천" },
+      "yearRound": { "period": "상시", "keywords": ["유학", "출장", "워홀", "장기체류"], "tone": "안내" }
     }
   },
   "toneGuide": {

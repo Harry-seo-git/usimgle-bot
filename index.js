@@ -186,6 +186,22 @@ app.command('/ux', async ({ command, ack, respond }) => {
       case 'translate':
         await handleTranslate(args, respond);
         break;
+      case '비교':
+      case 'compare':
+        await handleCompare(args, respond);
+        break;
+      case '벌크검사':
+      case 'bulkcheck':
+        await handleBulkCheck(args, respond);
+        break;
+      case '랜덤':
+      case 'random':
+        await handleRandom(respond);
+        break;
+      case '통계':
+      case 'stats':
+        await handleStats(respond);
+        break;
       case '도움말':
       case 'help':
       case '':
@@ -353,6 +369,8 @@ ${context}
   }
 
   // 인터랙티브 버튼 추가: 채택 / 수정요청
+  // Slack action value는 2000자 제한이므로 응답은 잘라서 저장
+  const truncatedResponse = aiResponse.substring(0, 1500);
   blocks.push({ type: 'divider' });
   blocks.push({
     type: 'actions',
@@ -362,13 +380,13 @@ ${context}
         text: { type: 'plain_text', text: '채택하기' },
         style: 'primary',
         action_id: 'adopt_suggest',
-        value: JSON.stringify({ situation, response: aiResponse }),
+        value: JSON.stringify({ situation: situation.substring(0, 200), response: truncatedResponse }),
       },
       {
         type: 'button',
         text: { type: 'plain_text', text: '수정 요청' },
         action_id: 'revise_suggest',
-        value: JSON.stringify({ situation, response: aiResponse }),
+        value: JSON.stringify({ situation: situation.substring(0, 500) }),
       },
     ],
   });
@@ -399,16 +417,14 @@ app.action('adopt_suggest', async ({ action, ack, respond, body }) => {
 // --- 인터랙티브 버튼 핸들러: 수정요청 ---
 app.action('revise_suggest', async ({ action, ack, respond }) => {
   await ack();
-  const { situation, response: prevResponse } = JSON.parse(action.value);
+  const { situation } = JSON.parse(action.value);
 
   const prompt = `${buildSystemPrompt()}
 
-[이전 추천]
-${prevResponse}
-
 [요청]
-위 추천 문구가 채택되지 않았어. 다른 방향으로 3개의 대안 문구를 제안해줘.
+아래 상황에 대해 이전과 다른 방향으로 UX 문구 3개를 새롭게 제안해줘.
 더 간결하거나, 다른 톤으로, 또는 다른 관점에서 접근해봐.
+각 문구마다 톤, 컴포넌트, 이유를 알려줘.
 상황: "${situation}"`;
 
   const aiResponse = await askAI(prompt);
@@ -416,6 +432,7 @@ ${prevResponse}
     return respond({ response_type: 'ephemeral', text: 'AI 응답을 받지 못했어요.' });
   }
 
+  const truncatedResponse = aiResponse.substring(0, 1500);
   const blocks = [
     { type: 'header', text: { type: 'plain_text', text: '수정된 UX 문구 추천' } },
     { type: 'section', text: { type: 'mrkdwn', text: `*상황:* ${situation}` } },
@@ -430,13 +447,13 @@ ${prevResponse}
           text: { type: 'plain_text', text: '채택하기' },
           style: 'primary',
           action_id: 'adopt_suggest',
-          value: JSON.stringify({ situation, response: aiResponse }),
+          value: JSON.stringify({ situation: situation.substring(0, 200), response: truncatedResponse }),
         },
         {
           type: 'button',
           text: { type: 'plain_text', text: '다시 수정 요청' },
           action_id: 'revise_suggest',
-          value: JSON.stringify({ situation, response: aiResponse }),
+          value: JSON.stringify({ situation: situation.substring(0, 500) }),
         },
       ],
     },
@@ -828,6 +845,255 @@ ${targetLangs.map((l) => `[${langNames[l] || l}] ...`).join('\n')}
   return respond({ response_type: 'in_channel', blocks });
 }
 
+// --- 핸들러: 문구 비교 ---
+async function handleCompare(text, respond) {
+  if (!text || !text.includes('vs')) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '비교할 두 문구를 `vs`로 구분해 주세요.\n예: `/ux 비교 결제가 처리되었습니다 vs 결제를 완료했어요`',
+    });
+  }
+
+  const [textA, textB] = text.split('vs').map((t) => t.trim());
+  if (!textA || !textB) {
+    return respond({ response_type: 'ephemeral', text: '`vs` 양쪽에 문구를 입력해 주세요.' });
+  }
+
+  const prompt = `${buildSystemPrompt()}
+
+[요청]
+아래 두 UX 문구를 유심사 가이드라인 기준으로 비교 분석해줘.
+
+문구 A: "${textA}"
+문구 B: "${textB}"
+
+각 문구에 대해:
+1. 점수 (100점 만점)
+2. 장점
+3. 개선점
+
+마지막에 어떤 문구가 더 적합한지 결론을 내려줘.
+답변은 한국어로 작성해.`;
+
+  const aiResponse = await askAI(prompt);
+  if (!aiResponse) {
+    return respond({ response_type: 'ephemeral', text: 'AI 응답을 받지 못했어요.' });
+  }
+
+  return respond({
+    response_type: 'in_channel',
+    blocks: [
+      { type: 'header', text: { type: 'plain_text', text: 'UX 문구 비교 분석' } },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*문구 A:*\n"${textA}"` },
+          { type: 'mrkdwn', text: `*문구 B:*\n"${textB}"` },
+        ],
+      },
+      { type: 'divider' },
+      { type: 'section', text: { type: 'mrkdwn', text: aiResponse } },
+    ],
+  });
+}
+
+// --- 핸들러: 벌크 검사 ---
+async function handleBulkCheck(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '여러 문구를 `/`로 구분해서 입력해 주세요.\n예: `/ux 벌크검사 결제 실패입니다/로그인 해주십시오/배송이 완료됐어요`',
+    });
+  }
+
+  const phrases = text.split('/').map((t) => t.trim()).filter(Boolean);
+  if (phrases.length < 2) {
+    return respond({ response_type: 'ephemeral', text: '최소 2개 이상의 문구를 `/`로 구분해 주세요.' });
+  }
+
+  const passivePatterns = [
+    { pattern: /되었습니다/, fix: '됐어요' },
+    { pattern: /하였습니다/, fix: '했어요' },
+    { pattern: /됩니다/, fix: '돼요' },
+    { pattern: /합니다/, fix: '해요' },
+    { pattern: /십시오/, fix: '세요' },
+    { pattern: /바랍니다/, fix: '주세요' },
+    { pattern: /없습니다/, fix: '없어요' },
+    { pattern: /있습니다/, fix: '있어요' },
+    { pattern: /입니다/, fix: '이에요' },
+  ];
+
+  const negativePatterns = [/할 수 없/, /불가능/, /하지 마/, /않으면/, /못합니다/, /안됩니다/];
+
+  const results = phrases.map((phrase) => {
+    const issues = [];
+    if (phrase.length > 40) issues.push('40자 초과');
+    for (const { pattern } of passivePatterns) {
+      if (pattern.test(phrase)) { issues.push('해요체 필요'); break; }
+    }
+    for (const p of negativePatterns) {
+      if (p.test(phrase)) { issues.push('부정문'); break; }
+    }
+    const passed = issues.length === 0;
+    return { phrase, passed, issues };
+  });
+
+  const passCount = results.filter((r) => r.passed).length;
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: `벌크 검사 결과 (${passCount}/${results.length} 통과)` },
+    },
+  ];
+
+  for (const r of results) {
+    const icon = r.passed ? 'PASS' : 'FAIL';
+    const issueStr = r.issues.length ? ` — ${r.issues.join(', ')}` : '';
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `\`${icon}\` "${r.phrase}"${issueStr}` },
+    });
+  }
+
+  if (passCount < results.length) {
+    blocks.push({ type: 'divider' });
+    blocks.push({
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: '개별 상세 검사: `/ux 검사 [문구]`' }],
+    });
+  }
+
+  return respond({ response_type: 'in_channel', blocks });
+}
+
+// --- 핸들러: 랜덤 UX 팁 ---
+async function handleRandom(respond) {
+  // 전체 문구 수집
+  const allEntries = [];
+  for (const cat of Object.values(guide.categories)) {
+    for (const entry of cat.entries) {
+      allEntries.push({ ...entry, category: cat.label });
+    }
+  }
+
+  // 랜덤 문구 선택
+  const entry = allEntries[Math.floor(Math.random() * allEntries.length)];
+
+  // 랜덤 라이팅 팁
+  const tips = [
+    '한 문장은 40자 이내로! 짧을수록 읽기 쉬워요.',
+    '"~합니다" 대신 "~해요"를 쓰면 더 친근해져요.',
+    '에러 메시지는 "원인 + 해결방법"으로 구성해 보세요.',
+    'CTA 버튼은 "주문하기"처럼 동사로 시작하면 클릭률이 올라가요.',
+    '"~할 수 없습니다" 대신 "~하면 가능해요"로 바꿔보세요.',
+    '이모지는 핵심 포인트에만 1~2개 절제해서 사용해요.',
+    '로딩 문구에는 "잠시만 기다려 주세요"처럼 기다림의 이유를 알려주세요.',
+    '빈 화면(Empty State)에는 다음 행동을 안내하는 문구를 넣어보세요.',
+    '사과 문구에는 "죄송해요" + 해결 의지를 함께 담아주세요.',
+    '성공 메시지에는 다음 단계를 안내하면 사용자 경험이 좋아져요.',
+  ];
+  const tip = tips[Math.floor(Math.random() * tips.length)];
+
+  return respond({
+    response_type: 'in_channel',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: '오늘의 UX 라이팅 팁' },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*TIP:* ${tip}` },
+      },
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*오늘의 문구 예시*\n\`${entry.id}\` \`${entry.category}\`\n*${entry.situation}*\n> ${entry.text}\n_톤: ${entry.tone} | 컴포넌트: ${entry.component}_`,
+        },
+      },
+    ],
+  });
+}
+
+// --- 핸들러: 통계 ---
+async function handleStats(respond) {
+  // 카테고리별 통계
+  const catStats = Object.entries(guide.categories).map(([key, cat]) => ({
+    key,
+    label: cat.label,
+    count: cat.entries.length,
+  }));
+  const totalEntries = catStats.reduce((sum, c) => sum + c.count, 0);
+
+  // 톤 분포
+  const toneCount = {};
+  for (const cat of Object.values(guide.categories)) {
+    for (const entry of cat.entries) {
+      toneCount[entry.tone] = (toneCount[entry.tone] || 0) + 1;
+    }
+  }
+  const toneSorted = Object.entries(toneCount).sort((a, b) => b[1] - a[1]);
+
+  // 컴포넌트 분포
+  const compCount = {};
+  for (const cat of Object.values(guide.categories)) {
+    for (const entry of cat.entries) {
+      compCount[entry.component] = (compCount[entry.component] || 0) + 1;
+    }
+  }
+  const compSorted = Object.entries(compCount).sort((a, b) => b[1] - a[1]);
+
+  // 막대 그래프 생성
+  const maxCount = Math.max(...catStats.map((c) => c.count));
+  const catBars = catStats
+    .map((c) => {
+      const bar = '█'.repeat(Math.round((c.count / maxCount) * 10));
+      return `${c.label} ${bar} ${c.count}건`;
+    })
+    .join('\n');
+
+  const toneList = toneSorted
+    .map(([tone, count]) => `${tone}: ${count}건`)
+    .join(' · ');
+
+  const compList = compSorted
+    .slice(0, 8)
+    .map(([comp, count]) => `${comp}: ${count}건`)
+    .join(' · ');
+
+  return respond({
+    response_type: 'in_channel',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: `UX 라이팅 가이드 통계 (총 ${totalEntries}건)` },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*카테고리별 분포*\n\`\`\`\n${catBars}\n\`\`\`` },
+      },
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*톤 분포*\n${toneList}` },
+      },
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*컴포넌트 분포 (상위 8개)*\n${compList}` },
+      },
+      { type: 'divider' },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: `카테고리 ${catStats.length}개 · 톤 ${toneSorted.length}종 · 컴포넌트 ${compSorted.length}종` }],
+      },
+    ],
+  });
+}
+
 // --- 핸들러: 도움말 ---
 async function handleHelp(respond) {
   return respond({
@@ -842,16 +1108,38 @@ async function handleHelp(respond) {
         text: {
           type: 'mrkdwn',
           text: [
+            '*기본*',
             '`/ux 검색 [키워드]` — 키워드로 UX 문구 검색',
             '`/ux 카테고리 [이름]` — 카테고리별 문구 조회',
-            '`/ux 추천 [상황설명]` — AI가 상황에 맞는 문구 제안',
-            '`/ux 피드백 [문구]` — 기존 문구의 개선점 분석',
-            '`/ux 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
             '`/ux 톤 [톤이름]` — 톤 가이드 조회',
             '`/ux 원칙` — 라이팅 원칙 조회',
-            '`/ux 검사 [문구]` — 가이드라인 일관성 자동 검사',
-            '`/ux 번역 [문구 또는 ID]` — 영어/일본어 등 다국어 번역',
-            '`/ux 도움말` — 이 도움말 표시',
+            '`/ux 통계` — 가이드 현황 대시보드',
+            '`/ux 랜덤` — 오늘의 UX 라이팅 팁',
+          ].join('\n'),
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: [
+            '*AI 기능*',
+            '`/ux 추천 [상황설명]` — AI가 상황에 맞는 문구 제안',
+            '`/ux 피드백 [문구]` — 기존 문구의 개선점 분석',
+            '`/ux 비교 [문구A] vs [문구B]` — 두 문구 비교 분석',
+            '`/ux 번역 [문구 또는 ID]` — 다국어 번역',
+          ].join('\n'),
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: [
+            '*검사/관리*',
+            '`/ux 검사 [문구]` — 가이드라인 일관성 검사',
+            '`/ux 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
+            '`/ux 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
           ].join('\n'),
         },
       },
