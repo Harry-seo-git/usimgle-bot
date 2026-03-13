@@ -201,6 +201,23 @@ app.command('/uxr', async ({ command, ack, respond }) => {
       case 'edit':
         await handleEdit(args, respond, command.user_id);
         break;
+      case '삭제':
+      case 'delete':
+        await handleDelete(args, respond, command.user_id);
+        break;
+      case '중복검사':
+      case 'duplicate':
+        await handleDuplicate(args, respond);
+        break;
+      case '용어':
+      case '용어집':
+      case 'glossary':
+        await handleGlossary(args, respond);
+        break;
+      case '내보내기':
+      case 'export':
+        await handleExport(args, respond);
+        break;
       case '히스토리':
       case 'history':
         await handleHistory(args, respond);
@@ -768,6 +785,394 @@ async function handleEdit(text, respond, userId) {
       {
         type: 'context',
         elements: [{ type: 'mrkdwn', text: sheetEnabled ? 'JSON + Google Sheets 양쪽 수정 완료' : 'JSON 수정 완료 (시트 미연동)' }],
+      },
+    ],
+  });
+}
+
+// --- 핸들러: 삭제 ---
+async function handleDelete(text, respond, userId) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '삭제할 문구 ID를 입력해 주세요.\n예: `/uxr 삭제 ord-005`',
+    });
+  }
+
+  const id = text.trim();
+
+  // JSON에서 해당 ID 찾기
+  let found = null;
+  let catKey = null;
+  let entryIndex = -1;
+  for (const [key, cat] of Object.entries(guide.categories)) {
+    const idx = cat.entries.findIndex((e) => e.id === id);
+    if (idx !== -1) {
+      found = cat.entries[idx];
+      catKey = key;
+      entryIndex = idx;
+      break;
+    }
+  }
+
+  if (!found) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `ID "${id}"를 찾을 수 없어요. \`/uxr 검색\`으로 ID를 확인해 주세요.`,
+    });
+  }
+
+  // 삭제 실행
+  const deletedText = found.text;
+  const deletedCategory = guide.categories[catKey].label;
+  guide.categories[catKey].entries.splice(entryIndex, 1);
+
+  try {
+    saveGuide();
+  } catch (err) {
+    return respond({ response_type: 'ephemeral', text: `JSON 저장 오류: ${err.message}` });
+  }
+
+  // 알림 채널에 삭제 알림
+  sendNotification([
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: 'UX 문구가 삭제됐어요' },
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*ID:* \`${id}\`` },
+        { type: 'mrkdwn', text: `*카테고리:* ${deletedCategory}` },
+      ],
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*삭제된 문구:* ~${deletedText}~` },
+    },
+    {
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `삭제자: <@${userId || 'unknown'}> | ${new Date().toLocaleDateString('ko-KR')}` }],
+    },
+  ]);
+
+  return respond({
+    response_type: 'in_channel',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: 'UX 문구 삭제 완료' },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*ID:* \`${id}\`` },
+          { type: 'mrkdwn', text: `*카테고리:* ${deletedCategory}` },
+        ],
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*삭제된 문구:* ~${deletedText}~` },
+      },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: `${found.tone} | ${found.component} — 복구가 필요하면 \`/uxr 등록\`으로 다시 추가해 주세요.` }],
+      },
+    ],
+  });
+}
+
+// --- 핸들러: 중복검사 ---
+async function handleDuplicate(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '중복 여부를 확인할 문구를 입력해 주세요.\n예: `/uxr 중복검사 결제가 완료됐어요`',
+    });
+  }
+
+  const inputText = text.trim().toLowerCase();
+  const allEntries = [];
+  for (const [catKey, cat] of Object.entries(guide.categories)) {
+    for (const entry of cat.entries) {
+      allEntries.push({ ...entry, category: cat.label, categoryKey: catKey });
+    }
+  }
+
+  // 1. 정확히 동일한 문구
+  const exact = allEntries.filter((e) => e.text.toLowerCase() === inputText);
+
+  // 2. 유사도 기반 매칭 (단어 겹침)
+  const inputWords = new Set(inputText.split(/\s+/).filter((w) => w.length > 1));
+  const similar = [];
+  for (const entry of allEntries) {
+    if (exact.find((e) => e.id === entry.id)) continue;
+    const entryWords = new Set(entry.text.toLowerCase().split(/\s+/).filter((w) => w.length > 1));
+    const overlap = [...inputWords].filter((w) => entryWords.has(w));
+    const similarity = inputWords.size > 0 ? overlap.length / Math.max(inputWords.size, entryWords.size) : 0;
+    if (similarity >= 0.4) {
+      similar.push({ ...entry, similarity: Math.round(similarity * 100) });
+    }
+  }
+  similar.sort((a, b) => b.similarity - a.similarity);
+
+  // 3. 포함 관계 (입력 문구가 기존 문구에 포함되거나 반대)
+  const contained = allEntries.filter((e) => {
+    if (exact.find((x) => x.id === e.id)) return false;
+    if (similar.find((x) => x.id === e.id)) return false;
+    const eLower = e.text.toLowerCase();
+    return eLower.includes(inputText) || inputText.includes(eLower);
+  });
+
+  const totalFound = exact.length + similar.length + contained.length;
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: `중복 검사 결과 (${totalFound}건 발견)` },
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*검사 문구:* "${text}"` },
+    },
+  ];
+
+  if (exact.length > 0) {
+    blocks.push({ type: 'divider' });
+    const list = exact.map((e) => `\`${e.id}\` [${e.category}] "${e.text}" _(${e.tone})_`).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*동일한 문구 (${exact.length}건)*\n${list}` },
+    });
+  }
+
+  if (similar.length > 0) {
+    blocks.push({ type: 'divider' });
+    const list = similar.slice(0, 5).map((e) => `\`${e.id}\` [${e.category}] "${e.text}" _(유사도 ${e.similarity}%)_`).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*유사한 문구 (${similar.length}건)*\n${list}` },
+    });
+  }
+
+  if (contained.length > 0) {
+    blocks.push({ type: 'divider' });
+    const list = contained.slice(0, 5).map((e) => `\`${e.id}\` [${e.category}] "${e.text}" _(${e.tone})_`).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*포함 관계 (${contained.length}건)*\n${list}` },
+    });
+  }
+
+  if (totalFound === 0) {
+    blocks.push({ type: 'divider' });
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: '중복되는 문구가 없어요! `/uxr 등록`으로 새 문구를 추가할 수 있어요.' },
+    });
+  }
+
+  return respond({ response_type: 'ephemeral', blocks });
+}
+
+// --- 핸들러: 용어집 ---
+const glossary = {
+  'eSIM': { official: 'eSIM', wrong: ['이심', 'e심', 'ESIM', 'esim', 'E-SIM'], desc: '디지털 SIM. 항상 "eSIM"으로 표기 (대소문자 주의)' },
+  'USIM': { official: 'USIM', wrong: ['유심', '유심카드', 'usim'], desc: '물리적 SIM 카드. 공식 표기는 "USIM"이지만 사용자 문맥에서 "유심"도 허용' },
+  '유심사': { official: '유심사', wrong: ['USIMSA', 'Usimgle', '유심사닷컴'], desc: '서비스 공식 명칭. 한글 "유심사"로 통일' },
+  '요금제': { official: '요금제', wrong: ['플랜', '상품', '패키지'], desc: '데이터 상품을 지칭할 때 "요금제"로 통일' },
+  '데이터': { official: '데이터', wrong: ['데이타', 'Data'], desc: '"데이터"로 통일. "데이타" 사용 금지' },
+  '로밍': { official: '로밍', wrong: ['로밍서비스', '국제로밍'], desc: '해외 데이터 사용을 의미. "로밍"으로 간결하게' },
+  'QR코드': { official: 'QR코드', wrong: ['QR 코드', 'qr코드', 'QR'], desc: '"QR코드" 붙여서 표기' },
+  '활성화': { official: '활성화', wrong: ['개통', '등록', '액티베이션'], desc: 'eSIM/USIM을 사용 가능 상태로 만드는 것. "활성화"로 통일' },
+  '충전': { official: '충전', wrong: ['리차지', '탑업', 'top-up'], desc: '데이터 추가 구매. "충전"으로 통일' },
+  '고객센터': { official: '고객센터', wrong: ['CS', '상담센터', '콜센터', '지원센터'], desc: '고객 지원 채널. "고객센터"로 통일' },
+};
+
+async function handleGlossary(text, respond) {
+  if (!text) {
+    const termList = Object.entries(glossary)
+      .map(([term, info]) => `*${info.official}* — ${info.desc}`)
+      .join('\n');
+
+    return respond({
+      response_type: 'ephemeral',
+      blocks: [
+        {
+          type: 'header',
+          text: { type: 'plain_text', text: `유심사 브랜드 용어집 (${Object.keys(glossary).length}개)` },
+        },
+        {
+          type: 'section',
+          text: { type: 'mrkdwn', text: termList },
+        },
+        { type: 'divider' },
+        {
+          type: 'context',
+          elements: [{ type: 'mrkdwn', text: '특정 용어 조회: `/uxr 용어 eSIM`' }],
+        },
+      ],
+    });
+  }
+
+  // 특정 용어 조회
+  const query = text.trim();
+  let matchKey = null;
+
+  // 공식 표기로 검색
+  for (const [key, info] of Object.entries(glossary)) {
+    if (key.toLowerCase() === query.toLowerCase() || info.official.toLowerCase() === query.toLowerCase()) {
+      matchKey = key;
+      break;
+    }
+  }
+
+  // 잘못된 표기로 검색
+  if (!matchKey) {
+    for (const [key, info] of Object.entries(glossary)) {
+      if (info.wrong.some((w) => w.toLowerCase() === query.toLowerCase())) {
+        matchKey = key;
+        break;
+      }
+    }
+  }
+
+  if (!matchKey) {
+    return respond({
+      response_type: 'ephemeral',
+      text: `"${query}" 용어를 찾을 수 없어요. \`/uxr 용어\`로 전체 목록을 확인해 주세요.`,
+    });
+  }
+
+  const info = glossary[matchKey];
+
+  // 해당 용어가 사용된 문구 예시
+  const examples = [];
+  for (const cat of Object.values(guide.categories)) {
+    for (const entry of cat.entries) {
+      if (entry.text.includes(info.official) || info.wrong.some((w) => entry.text.includes(w))) {
+        examples.push({ ...entry, category: cat.label });
+      }
+    }
+  }
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: `용어: ${info.official}` },
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*설명:* ${info.desc}` },
+    },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*공식 표기:* ${info.official}` },
+        { type: 'mrkdwn', text: `*잘못된 표기:* ${info.wrong.join(', ')}` },
+      ],
+    },
+  ];
+
+  if (examples.length > 0) {
+    blocks.push({ type: 'divider' });
+    const list = examples.slice(0, 5).map((e) => formatEntryCompact(e)).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*사용 예시 (${examples.length}건)*\n${list}` },
+    });
+  }
+
+  // 입력이 잘못된 표기였으면 경고
+  if (info.wrong.some((w) => w.toLowerCase() === query.toLowerCase())) {
+    blocks.push({ type: 'divider' });
+    blocks.push({
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `"${query}"는 잘못된 표기예요. *${info.official}*로 사용해 주세요.` }],
+    });
+  }
+
+  return respond({ response_type: 'in_channel', blocks });
+}
+
+// --- 핸들러: 내보내기 ---
+async function handleExport(format, respond) {
+  const allEntries = [];
+  for (const [catKey, cat] of Object.entries(guide.categories)) {
+    for (const entry of cat.entries) {
+      allEntries.push({
+        id: entry.id,
+        category: cat.label,
+        categoryKey: catKey,
+        situation: entry.situation,
+        text: entry.text,
+        tone: entry.tone,
+        component: entry.component,
+      });
+    }
+  }
+
+  const fmt = (format || '').trim().toLowerCase();
+
+  if (fmt === 'json') {
+    // JSON 포맷
+    const jsonStr = JSON.stringify(allEntries, null, 2);
+    const preview = jsonStr.substring(0, 2800);
+
+    return respond({
+      response_type: 'ephemeral',
+      blocks: [
+        {
+          type: 'header',
+          text: { type: 'plain_text', text: `UX 문구 내보내기 — JSON (${allEntries.length}건)` },
+        },
+        {
+          type: 'section',
+          text: { type: 'mrkdwn', text: `\`\`\`${preview}${jsonStr.length > 2800 ? '\n... (이하 생략)' : ''}\`\`\`` },
+        },
+        {
+          type: 'context',
+          elements: [{ type: 'mrkdwn', text: '전체 데이터는 서버의 `data/ux-writing-guide.json` 파일에서 확인할 수 있어요.' }],
+        },
+      ],
+    });
+  }
+
+  // 기본: CSV 포맷
+  const csvHeader = 'ID,카테고리,카테고리키,상황,문구,톤,컴포넌트';
+  const csvRows = allEntries.map((e) =>
+    `${e.id},${e.category},${e.categoryKey},"${e.situation.replace(/"/g, '""')}","${e.text.replace(/"/g, '""')}",${e.tone},${e.component}`
+  );
+  const csv = [csvHeader, ...csvRows].join('\n');
+  const preview = [csvHeader, ...csvRows.slice(0, 8)].join('\n');
+
+  return respond({
+    response_type: 'ephemeral',
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: `UX 문구 내보내기 — CSV (${allEntries.length}건)` },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `\`\`\`${preview}\n... (외 ${csvRows.length - 8}건)\`\`\`` },
+      },
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*전체 CSV를 복사하려면* 아래 코드 블록을 펼쳐주세요:',
+        },
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `\`\`\`${csv.substring(0, 2900)}${csv.length > 2900 ? '\n... (슬랙 글자 제한으로 잘림 — 서버 파일에서 전체 확인)' : ''}\`\`\`` },
+      },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: '형식 옵션: `/uxr 내보내기` (CSV) 또는 `/uxr 내보내기 json` (JSON)' }],
       },
     ],
   });
@@ -1439,12 +1844,20 @@ async function handleHelp(respond) {
             '  예: `/uxr 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
             '`/uxr 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
             '  예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오/배송 완료됐어요`',
-            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록 (JSON+시트)',
+            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
             '  예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
-            '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정 (JSON+시트)',
+            '`/uxr 수정 [ID|필드|새값]` — 기존 문구 수정',
             '  예: `/uxr 수정 ord-001|text|결제가 완료됐어요!`',
+            '`/uxr 삭제 [ID]` — 문구 삭제',
+            '  예: `/uxr 삭제 ord-005`',
+            '`/uxr 중복검사 [문구]` — 등록 전 유사 문구 탐지',
+            '  예: `/uxr 중복검사 결제가 완료됐어요`',
             '`/uxr 히스토리 [ID]` — 문구 변경 이력 조회',
             '  예: `/uxr 히스토리 ord-001`',
+            '`/uxr 용어 [용어]` — 브랜드 용어집 조회',
+            '  예: `/uxr 용어 eSIM`  `/uxr 용어` (전체)',
+            '`/uxr 내보내기 [json]` — 전체 문구 CSV/JSON 내보내기',
+            '  예: `/uxr 내보내기`  `/uxr 내보내기 json`',
           ].join('\n'),
         },
       },
