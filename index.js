@@ -178,6 +178,14 @@ app.command('/ux', async ({ command, ack, respond }) => {
       case 'principles':
         await handlePrinciples(respond);
         break;
+      case '검사':
+      case 'check':
+        await handleCheck(args, respond);
+        break;
+      case '번역':
+      case 'translate':
+        await handleTranslate(args, respond);
+        break;
       case '도움말':
       case 'help':
       case '':
@@ -344,8 +352,98 @@ ${context}
     });
   }
 
+  // 인터랙티브 버튼 추가: 채택 / 수정요청
+  blocks.push({ type: 'divider' });
+  blocks.push({
+    type: 'actions',
+    elements: [
+      {
+        type: 'button',
+        text: { type: 'plain_text', text: '채택하기' },
+        style: 'primary',
+        action_id: 'adopt_suggest',
+        value: JSON.stringify({ situation, response: aiResponse }),
+      },
+      {
+        type: 'button',
+        text: { type: 'plain_text', text: '수정 요청' },
+        action_id: 'revise_suggest',
+        value: JSON.stringify({ situation, response: aiResponse }),
+      },
+    ],
+  });
+
   return respond({ response_type: 'in_channel', blocks });
 }
+
+// --- 인터랙티브 버튼 핸들러: 채택 ---
+app.action('adopt_suggest', async ({ action, ack, respond, body }) => {
+  await ack();
+  const { situation, response } = JSON.parse(action.value);
+  const user = body.user.name || body.user.id;
+
+  // 구글시트에 저장
+  if (sheetEnabled) {
+    try {
+      await addRow({ category: '추천채택', text: response.substring(0, 200), tone: '추천', notes: `${user}: ${situation}` });
+    } catch (_) { /* ignore */ }
+  }
+
+  await respond({
+    response_type: 'in_channel',
+    replace_original: false,
+    text: `*${user}* 님이 위 추천 문구를 채택했어요! ${sheetEnabled ? '구글시트에 저장됐어요.' : ''}`,
+  });
+});
+
+// --- 인터랙티브 버튼 핸들러: 수정요청 ---
+app.action('revise_suggest', async ({ action, ack, respond }) => {
+  await ack();
+  const { situation, response: prevResponse } = JSON.parse(action.value);
+
+  const prompt = `${buildSystemPrompt()}
+
+[이전 추천]
+${prevResponse}
+
+[요청]
+위 추천 문구가 채택되지 않았어. 다른 방향으로 3개의 대안 문구를 제안해줘.
+더 간결하거나, 다른 톤으로, 또는 다른 관점에서 접근해봐.
+상황: "${situation}"`;
+
+  const aiResponse = await askAI(prompt);
+  if (!aiResponse) {
+    return respond({ response_type: 'ephemeral', text: 'AI 응답을 받지 못했어요.' });
+  }
+
+  const blocks = [
+    { type: 'header', text: { type: 'plain_text', text: '수정된 UX 문구 추천' } },
+    { type: 'section', text: { type: 'mrkdwn', text: `*상황:* ${situation}` } },
+    { type: 'divider' },
+    { type: 'section', text: { type: 'mrkdwn', text: aiResponse } },
+    { type: 'divider' },
+    {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: { type: 'plain_text', text: '채택하기' },
+          style: 'primary',
+          action_id: 'adopt_suggest',
+          value: JSON.stringify({ situation, response: aiResponse }),
+        },
+        {
+          type: 'button',
+          text: { type: 'plain_text', text: '다시 수정 요청' },
+          action_id: 'revise_suggest',
+          value: JSON.stringify({ situation, response: aiResponse }),
+        },
+      ],
+    },
+  ];
+
+  await respond({ response_type: 'in_channel', replace_original: false, blocks });
+});
 
 // --- 핸들러: 피드백 ---
 async function handleFeedback(text, respond) {
@@ -523,6 +621,213 @@ async function handlePrinciples(respond) {
   });
 }
 
+// --- 핸들러: 문구 일관성 검사 ---
+async function handleCheck(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '검사할 문구를 입력해 주세요.\n예: `/ux 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
+    });
+  }
+
+  // 로컬 규칙 기반 자동 검사
+  const issues = [];
+  const suggestions = [];
+
+  // 1. 길이 체크 (40자 이내)
+  if (text.length > 40) {
+    issues.push(`글자 수 ${text.length}자 (권장 40자 이내)`);
+  }
+
+  // 2. 수동태/딱딱한 말투 체크
+  const passivePatterns = [
+    { pattern: /되었습니다/g, fix: '됐어요' },
+    { pattern: /하였습니다/g, fix: '했어요' },
+    { pattern: /됩니다/g, fix: '돼요' },
+    { pattern: /합니다/g, fix: '해요' },
+    { pattern: /십시오/g, fix: '세요' },
+    { pattern: /바랍니다/g, fix: '주세요' },
+    { pattern: /없습니다/g, fix: '없어요' },
+    { pattern: /있습니다/g, fix: '있어요' },
+    { pattern: /입니다/g, fix: '이에요' },
+  ];
+  for (const { pattern, fix } of passivePatterns) {
+    if (pattern.test(text)) {
+      issues.push(`"${pattern.source}" → "${fix}" (해요체로 변경)`);
+      suggestions.push({ from: pattern.source, to: fix });
+    }
+  }
+
+  // 3. 부정문 체크
+  const negativePatterns = [
+    /할 수 없/,
+    /불가능/,
+    /하지 마/,
+    /않으면/,
+    /못합니다/,
+    /안됩니다/,
+    /금지/,
+  ];
+  for (const p of negativePatterns) {
+    if (p.test(text)) {
+      issues.push(`부정 표현 "${text.match(p)[0]}" 감지 → 긍정문으로 변경 권장`);
+    }
+  }
+
+  // 4. CTA 체크 (버튼 텍스트 패턴)
+  if (text.length <= 10 && !/하기$|보기$|하세요$|해주세요$/.test(text) && !/[가-힣]$/.test(text)) {
+    issues.push('CTA 버튼이라면 동사로 끝나도록 권장 (예: ~하기)');
+  }
+
+  // 5. 이모지 과다 사용 체크
+  const emojiCount = (text.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
+  if (emojiCount > 2) {
+    issues.push(`이모지 ${emojiCount}개 감지 → 절제해서 사용 권장`);
+  }
+
+  // 결과 구성
+  const passed = issues.length === 0;
+  const statusIcon = passed ? 'PASS' : 'FAIL';
+  const statusText = passed
+    ? '가이드라인을 잘 지키고 있어요!'
+    : `${issues.length}개 개선 포인트가 있어요.`;
+
+  // 자동 수정 문구 생성
+  let autoFixed = text;
+  for (const { from, to } of suggestions) {
+    autoFixed = autoFixed.replace(new RegExp(from, 'g'), to);
+  }
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: `UX 문구 검사 [${statusIcon}]` },
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*원본:* "${text}"\n*글자 수:* ${text.length}자` },
+    },
+    { type: 'divider' },
+  ];
+
+  if (!passed) {
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*개선 포인트*\n${issues.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}`,
+      },
+    });
+
+    if (autoFixed !== text) {
+      blocks.push({
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*자동 수정 제안:*\n> ${autoFixed}` },
+      });
+    }
+  } else {
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: statusText },
+    });
+  }
+
+  // AI 기반 심층 분석도 추가
+  const prompt = `${buildSystemPrompt()}
+
+[요청]
+아래 UX 문구를 유심사 가이드라인 기준으로 간단히 점수(100점 만점)와 한줄 코멘트를 달아줘.
+평가 기준: 해요체 사용, 40자 이내, 능동태, 긍정문, 명확성
+답변 형식: "점수: XX/100 | 코멘트: ..."
+
+문구: "${text}"`;
+
+  const aiComment = await askAI(prompt);
+  if (aiComment) {
+    blocks.push({ type: 'divider' });
+    blocks.push({
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `AI 평가: ${aiComment}` }],
+    });
+  }
+
+  return respond({ response_type: 'in_channel', blocks });
+}
+
+// --- 핸들러: 다국어 번역 ---
+async function handleTranslate(text, respond) {
+  if (!text) {
+    return respond({
+      response_type: 'ephemeral',
+      text: '번역할 문구 또는 ID를 입력해 주세요.\n예: `/ux 번역 ord-004` 또는 `/ux 번역 en 결제가 완료됐어요`',
+    });
+  }
+
+  // ID로 검색하는 경우
+  const idMatch = text.match(/^([a-z]{3}-\d{3})$/i);
+  let sourceText = text;
+  let targetLangs = ['en', 'ja'];
+
+  if (idMatch) {
+    const id = idMatch[1].toLowerCase();
+    let found = null;
+    for (const cat of Object.values(guide.categories)) {
+      for (const entry of cat.entries) {
+        if (entry.id === id) { found = entry; break; }
+      }
+      if (found) break;
+    }
+    if (!found) {
+      return respond({ response_type: 'ephemeral', text: `"${id}" ID의 문구를 찾을 수 없어요.` });
+    }
+    sourceText = found.text;
+  }
+
+  // 언어 지정 파싱 (예: "en 결제가 완료됐어요" 또는 "ja 결제가 완료됐어요")
+  const langMatch = text.match(/^(en|ja|zh|es|fr)\s+(.+)$/i);
+  if (langMatch) {
+    targetLangs = [langMatch[1].toLowerCase()];
+    sourceText = langMatch[2];
+  }
+
+  const langNames = { en: '영어', ja: '일본어', zh: '중국어', es: '스페인어', fr: '프랑스어' };
+  const targetLangStr = targetLangs.map((l) => langNames[l] || l).join(', ');
+
+  const prompt = `${buildSystemPrompt()}
+
+[요청]
+아래 한국어 UX 문구를 ${targetLangStr}로 번역해줘.
+번역 시 유심사 브랜드 톤(친근, 명확, 간결)을 유지하고, 각 언어의 자연스러운 UX 문구 관습을 따라줘.
+형식:
+
+${targetLangs.map((l) => `[${langNames[l] || l}] ...`).join('\n')}
+
+원문: "${sourceText}"`;
+
+  const aiResponse = await askAI(prompt);
+  if (!aiResponse) {
+    return respond({ response_type: 'ephemeral', text: 'AI 응답을 받지 못했어요. API 키 설정을 확인해 주세요.' });
+  }
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: 'UX 문구 다국어 번역' },
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*원문 (한국어):* "${sourceText}"` },
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: aiResponse },
+    },
+  ];
+
+  return respond({ response_type: 'in_channel', blocks });
+}
+
 // --- 핸들러: 도움말 ---
 async function handleHelp(respond) {
   return respond({
@@ -544,6 +849,8 @@ async function handleHelp(respond) {
             '`/ux 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
             '`/ux 톤 [톤이름]` — 톤 가이드 조회',
             '`/ux 원칙` — 라이팅 원칙 조회',
+            '`/ux 검사 [문구]` — 가이드라인 일관성 자동 검사',
+            '`/ux 번역 [문구 또는 ID]` — 영어/일본어 등 다국어 번역',
             '`/ux 도움말` — 이 도움말 표시',
           ].join('\n'),
         },
