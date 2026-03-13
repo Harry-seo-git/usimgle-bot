@@ -2,6 +2,7 @@ const { App, ExpressReceiver } = require('@slack/bolt');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const cron = require('node-cron');
 require('dotenv').config();
 
 // --- UX 라이팅 가이드 데이터 로드 ---
@@ -1453,7 +1454,7 @@ async function handleHelp(respond) {
         elements: [
           {
             type: 'mrkdwn',
-            text: '카테고리: 온보딩 · 상품탐색 · 주문/결제 · 배송 · eSIM · 여행/로밍 · 개통 · 계정 · 고객지원 · 시스템 · 마케팅',
+            text: `카테고리: 온보딩 · 상품탐색 · 주문/결제 · 배송 · eSIM · 여행/로밍 · 개통 · 계정 · 고객지원 · 시스템 · 마케팅${notifyChannelId ? `\n알림 채널: <#${notifyChannelId}> (신규 등록/수정 알림 + 매주 월요일 주간 리포트)` : ''}`,
           },
         ],
       },
@@ -1548,9 +1549,141 @@ ${text}
   return say(aiResponse);
 });
 
+// --- 주간 UX 리포트 자동 발송 ---
+function getWeeklyReport() {
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const allEntries = [];
+  const catStats = {};
+  const toneCount = {};
+  const newEntries = [];
+  const editedEntries = [];
+
+  for (const [catKey, cat] of Object.entries(guide.categories)) {
+    catStats[catKey] = { label: cat.label, count: cat.entries.length };
+    for (const entry of cat.entries) {
+      allEntries.push({ ...entry, category: cat.label, categoryKey: catKey });
+      toneCount[entry.tone] = (toneCount[entry.tone] || 0) + 1;
+
+      if (!entry.history) continue;
+      for (const h of entry.history) {
+        const hDate = new Date(h.date);
+        if (hDate < weekAgo) continue;
+        if (h.action === '등록') {
+          newEntries.push({ ...entry, category: cat.label });
+        } else if (h.action === '수정') {
+          editedEntries.push({ id: entry.id, category: cat.label, field: h.field, from: h.from, to: h.to, by: h.by });
+        }
+      }
+    }
+  }
+
+  const totalCount = allEntries.length;
+  const catCount = Object.keys(catStats).length;
+  const toneTotal = Object.keys(toneCount).length;
+
+  // 톤 분포 상위 5개
+  const toneSorted = Object.entries(toneCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const toneBar = toneSorted.map(([t, c]) => `${t}: ${c}건`).join(' · ');
+
+  // 카테고리 상위 5개
+  const catSorted = Object.entries(catStats).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
+  const catBar = catSorted.map(([, c]) => `${c.label}: ${c.count}건`).join(' · ');
+
+  // 날짜 포맷
+  const fmt = (d) => `${d.getMonth() + 1}/${d.getDate()}`;
+  const periodStr = `${fmt(weekAgo)} ~ ${fmt(now)}`;
+
+  return { totalCount, catCount, toneTotal, toneBar, catBar, newEntries, editedEntries, periodStr };
+}
+
+async function sendWeeklyReport() {
+  if (!notifyChannelId) return;
+
+  const r = getWeeklyReport();
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: `📊 주간 UX Writing 리포트 (${r.periodStr})` },
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*총 문구:* ${r.totalCount}개` },
+        { type: 'mrkdwn', text: `*카테고리:* ${r.catCount}개` },
+        { type: 'mrkdwn', text: `*신규 등록:* ${r.newEntries.length}건` },
+        { type: 'mrkdwn', text: `*수정:* ${r.editedEntries.length}건` },
+      ],
+    },
+  ];
+
+  // 신규 등록 목록
+  if (r.newEntries.length > 0) {
+    blocks.push({ type: 'divider' });
+    const newList = r.newEntries.slice(0, 10).map((e) =>
+      `• \`${e.id}\` [${e.category}] ${e.text} _(${e.tone})_`
+    ).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*🆕 신규 등록*\n${newList}` },
+    });
+  }
+
+  // 수정 목록
+  if (r.editedEntries.length > 0) {
+    blocks.push({ type: 'divider' });
+    const editList = r.editedEntries.slice(0, 10).map((e) =>
+      `• \`${e.id}\` [${e.category}] ${e.field}: ~${e.from}~ → "${e.to}"`
+    ).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*✏️ 수정 내역*\n${editList}` },
+    });
+  }
+
+  // 변동 없을 때
+  if (r.newEntries.length === 0 && r.editedEntries.length === 0) {
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: '이번 주는 등록/수정된 문구가 없어요.' },
+    });
+  }
+
+  // 분포 요약
+  blocks.push({ type: 'divider' });
+  blocks.push({
+    type: 'context',
+    elements: [{ type: 'mrkdwn', text: `*톤 분포 Top 5:* ${r.toneBar}\n*카테고리 Top 5:* ${r.catBar}` }],
+  });
+
+  try {
+    await app.client.chat.postMessage({
+      token: process.env.SLACK_BOT_TOKEN,
+      channel: notifyChannelId,
+      blocks,
+      text: `주간 UX Writing 리포트 (${r.periodStr})`,
+    });
+    console.log('주간 리포트 전송 완료');
+  } catch (err) {
+    console.error('주간 리포트 전송 실패:', err.message);
+  }
+}
+
+// 매주 월요일 오전 9시 (KST) 자동 발송 — cron은 서버 시간 기준
+// KST(UTC+9) → UTC 기준 월요일 00:00 = '0 0 * * 1'
+cron.schedule('0 0 * * 1', () => {
+  console.log('주간 UX 리포트 생성 시작...');
+  sendWeeklyReport();
+});
+
 // --- 서버 실행 ---
 const port = process.env.PORT || 3000;
 (async () => {
   await app.start(port);
   console.log(`유심사 UX 라이팅 봇 실행 중 (포트 ${port})`);
+  if (notifyChannelId) {
+    console.log(`알림 채널: ${notifyChannelId} (신규 문구 알림 + 매주 월요일 리포트)`);
+  }
 })();
