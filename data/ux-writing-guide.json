@@ -32,7 +32,15 @@
         { "id": "onb-001", "situation": "첫 방문 환영", "text": "유심사에 오신 걸 환영해요! 알뜰하게 유심을 만나보세요.", "tone": "친근", "component": "배너" },
         { "id": "onb-002", "situation": "회원가입 유도", "text": "1분이면 가입 완료! 첫 주문 할인 혜택도 받아보세요.", "tone": "친근", "component": "팝업" },
         { "id": "onb-003", "situation": "회원가입 완료", "text": "가입을 완료했어요! 지금 바로 나에게 맞는 유심을 찾아보세요.", "tone": "축하", "component": "확인 페이지" },
-        { "id": "onb-004", "situation": "본인인증 안내", "text": "안전한 서비스를 위해 본인인증이 필요해요. 1분이면 완료돼요.", "tone": "안내", "component": "인증 페이지" }
+        { "id": "onb-004", "situation": "본인인증 안내", "text": "안전한 서비스를 위해 본인인증이 필요해요. 1분이면 완료돼요.", "tone": "안내", "component": "인증 페이지" },
+        { "id": "onb-005", "situation": "소셜 로그인 안내", "text": "카카오, 네이버, 구글로 간편하게 시작하세요.", "tone": "친근", "component": "로그인 페이지" },
+        { "id": "onb-006", "situation": "이메일 인증 요청", "text": "인증 메일을 보냈어요. 메일함에서 확인 버튼을 눌러주세요.", "tone": "안내", "component": "인증 페이지" },
+        { "id": "onb-007", "situation": "이메일 인증 완료", "text": "이메일 인증이 완료됐어요! 이제 모든 서비스를 이용할 수 있어요.", "tone": "축하", "component": "확인 페이지" },
+        { "id": "onb-008", "situation": "튜토리얼 안내", "text": "유심사 사용법을 간단히 알려드릴게요. 건너뛸 수도 있어요.", "tone": "친근", "component": "온보딩 슬라이드" },
+        { "id": "onb-009", "situation": "튜토리얼 건너뛰기", "text": "나중에 마이페이지에서 다시 볼 수 있어요.", "tone": "안내", "component": "토스트" },
+        { "id": "onb-010", "situation": "앱 알림 허용 요청", "text": "배송 현황과 여행지 꿀팁을 알림으로 받아보세요.", "tone": "추천", "component": "권한 요청" },
+        { "id": "onb-011", "situation": "위치 권한 요청", "text": "현재 위치 기반으로 가장 적합한 요금제를 추천해 드려요.", "tone": "설명", "component": "권한 요청" },
+        { "id": "onb-012", "situation": "재방문 환영", "text": "다시 오셨군요! 지난번에 보던 요금제를 이어서 확인해 보세요.", "tone": "친근", "component": "배너" }
       ]
     },
     "browse": {
@@ -59,7 +67,14 @@
         { "id": "ord-008", "situation": "결제 완료 (eSIM)", "text": "eSIM 구매가 완료됐어요! 바로 설치 방법을 안내해 드릴게요.", "tone": "축하", "component": "완료 페이지" },
         { "id": "ord-005", "situation": "결제 실패", "text": "결제가 완료되지 않았어요. 카드 정보를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러 모달" },
         { "id": "ord-006", "situation": "재고 소진", "text": "이 상품은 일시적으로 품절이에요. 입고 알림을 받아보세요.", "tone": "안내", "component": "상품 상세" },
-        { "id": "ord-007", "situation": "쿠폰 적용 완료", "text": "쿠폰이 적용됐어요! 할인된 금액을 확인해 보세요.", "tone": "확인", "component": "주문서" }
+        { "id": "ord-007", "situation": "쿠폰 적용 완료", "text": "쿠폰이 적용됐어요! 할인된 금액을 확인해 보세요.", "tone": "확인", "component": "주문서" },
+        { "id": "ord-009", "situation": "주문 취소 완료", "text": "주문이 취소됐어요. 결제 금액은 3~5 영업일 내 환불돼요.", "tone": "확인", "component": "확인 페이지" },
+        { "id": "ord-010", "situation": "주문 취소 불가", "text": "이미 배송이 시작돼서 취소가 어려워요. 수령 후 반품을 신청해 주세요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "ord-011", "situation": "결제 수단 변경", "text": "다른 결제 수단으로 변경할 수 있어요. 원하는 방법을 선택해 주세요.", "tone": "안내", "component": "결제 선택" },
+        { "id": "ord-012", "situation": "부분 환불 완료", "text": "일부 금액이 환불됐어요. 상세 내역을 확인해 보세요.", "tone": "확인", "component": "확인 페이지" },
+        { "id": "ord-013", "situation": "최소 주문 금액 미달", "text": "최소 주문 금액은 {price}원이에요. 상품을 더 담아주세요.", "tone": "안내", "component": "장바구니" },
+        { "id": "ord-014", "situation": "쿠폰 만료", "text": "이 쿠폰은 사용 기간이 지났어요. 다른 쿠폰을 확인해 보세요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-015", "situation": "재주문 안내", "text": "이전 주문을 그대로 다시 주문할 수 있어요.", "tone": "추천", "component": "주문 내역" }
       ]
     },
     "delivery": {
@@ -68,7 +83,14 @@
         { "id": "dlv-001", "situation": "배송 시작", "text": "유심이 출발했어요! 배송 현황을 실시간으로 확인하세요.", "tone": "안내", "component": "알림" },
         { "id": "dlv-002", "situation": "배송 완료", "text": "유심이 도착했어요! 개통 방법을 안내해 드릴게요.", "tone": "축하", "component": "알림" },
         { "id": "dlv-003", "situation": "배송 지연", "text": "배송이 조금 늦어지고 있어요. 빠르게 처리할게요. 불편을 드려 죄송해요.", "tone": "사과", "component": "알림" },
-        { "id": "dlv-004", "situation": "배송 조회", "text": "주문번호로 배송 현황을 확인해 보세요.", "tone": "안내", "component": "조회 페이지" }
+        { "id": "dlv-004", "situation": "배송 조회", "text": "주문번호로 배송 현황을 확인해 보세요.", "tone": "안내", "component": "조회 페이지" },
+        { "id": "dlv-005", "situation": "배송지 변경", "text": "배송지를 변경했어요. 새 주소로 유심을 보내드릴게요.", "tone": "확인", "component": "토스트" },
+        { "id": "dlv-006", "situation": "배송지 변경 불가", "text": "이미 출발한 주문이라 배송지 변경이 어려워요. 고객센터로 문의해 주세요.", "tone": "사과", "component": "안내 모달" },
+        { "id": "dlv-007", "situation": "택배사 연결 안내", "text": "CJ대한통운으로 배송돼요. 송장번호로 직접 조회할 수도 있어요.", "tone": "안내", "component": "배송 상세" },
+        { "id": "dlv-008", "situation": "당일 출발 안내", "text": "오후 2시 전 주문은 오늘 바로 출발해요!", "tone": "확인", "component": "상품 상세" },
+        { "id": "dlv-009", "situation": "해외 배송 안내", "text": "해외 배송은 7~14일 소요돼요. eSIM을 이용하면 바로 받을 수 있어요.", "tone": "안내", "component": "주문서" },
+        { "id": "dlv-010", "situation": "공항 수령 안내", "text": "출국 당일 공항에서 직접 수령할 수 있어요. 수령 장소를 확인해 주세요.", "tone": "안내", "component": "수령 안내" },
+        { "id": "dlv-011", "situation": "편의점 수령 안내", "text": "가까운 편의점에서 받을 수 있어요. 수령 가능한 곳을 확인해 보세요.", "tone": "안내", "component": "배송 옵션" }
       ]
     },
     "activation": {
@@ -77,7 +99,15 @@
         { "id": "act-001", "situation": "개통 절차 안내", "text": "유심을 휴대폰에 넣고, 아래 순서대로 진행해 주세요.", "tone": "안내", "component": "가이드" },
         { "id": "act-002", "situation": "개통 완료", "text": "개통이 완료됐어요! 이제 새 유심으로 통화와 데이터를 이용하세요.", "tone": "축하", "component": "완료 페이지" },
         { "id": "act-003", "situation": "개통 실패", "text": "개통 중 문제가 발생했어요. 고객센터(1234-5678)로 연락해 주세요.", "tone": "안내", "component": "에러" },
-        { "id": "act-004", "situation": "번호이동 안내", "text": "기존 번호를 그대로 쓸 수 있어요. 인증 후 자동으로 번호이동이 진행돼요.", "tone": "안내", "component": "가이드" }
+        { "id": "act-004", "situation": "번호이동 안내", "text": "기존 번호를 그대로 쓸 수 있어요. 인증 후 자동으로 번호이동이 진행돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-005", "situation": "APN 설정 안내", "text": "데이터가 안 되면 APN 설정을 확인해 주세요. 아래 값을 입력하면 돼요.", "tone": "안내", "component": "설정 가이드" },
+        { "id": "act-006", "situation": "재부팅 요청", "text": "유심 장착 후 휴대폰을 한 번 껐다 켜주세요. 자동으로 연결돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-007", "situation": "듀얼심 설정 안내", "text": "기존 유심과 함께 쓸 수 있어요. 데이터용 회선으로 유심사를 선택해 주세요.", "tone": "설명", "component": "설정 가이드" },
+        { "id": "act-008", "situation": "개통 대기 중", "text": "개통을 처리하고 있어요. 최대 30분 정도 걸릴 수 있어요.", "tone": "안내", "component": "로딩" },
+        { "id": "act-009", "situation": "개통 예약 완료", "text": "출발일에 맞춰 자동으로 개통돼요. 따로 할 일은 없어요!", "tone": "확인", "component": "확인 페이지" },
+        { "id": "act-010", "situation": "PIN 코드 입력", "text": "유심 카드에 적힌 PIN 코드를 입력해 주세요.", "tone": "안내", "component": "입력 폼" },
+        { "id": "act-011", "situation": "비행기 모드 해제 안내", "text": "비행기 모드를 끄면 자동으로 네트워크에 연결돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-012", "situation": "통신사 수동 선택", "text": "자동 연결이 안 되면 설정 > 통신사에서 직접 선택해 주세요.", "tone": "안내", "component": "설정 가이드" }
       ]
     },
     "esim": {
@@ -104,7 +134,14 @@
         { "id": "trv-004", "situation": "데이터 소진 완료", "text": "데이터를 모두 사용했어요. 추가 충전하면 바로 다시 연결돼요.", "tone": "안내", "component": "알림" },
         { "id": "trv-005", "situation": "구글맵 무료 데이터", "text": "구글맵은 데이터 차감 없이 무료로 이용할 수 있어요.", "tone": "설명", "component": "상품 상세" },
         { "id": "trv-006", "situation": "긴급 연락처 안내", "text": "긴급 상황 시 현지 대한민국 대사관 또는 119로 연락하세요.", "tone": "안내", "component": "긴급 페이지" },
-        { "id": "trv-007", "situation": "여행 종료 안내", "text": "즐거운 여행이었나요? 사용 후기를 남기면 포인트를 드려요!", "tone": "친근", "component": "푸시 알림" }
+        { "id": "trv-007", "situation": "여행 종료 안내", "text": "즐거운 여행이었나요? 사용 후기를 남기면 포인트를 드려요!", "tone": "친근", "component": "푸시 알림" },
+        { "id": "trv-008", "situation": "멀티 국가 유심 안내", "text": "이 요금제로 여러 나라에서 사용할 수 있어요. 지원 국가를 확인해 보세요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-009", "situation": "VPN 사용 주의", "text": "일부 국가에서는 VPN 사용이 제한될 수 있어요. 현지 규정을 확인해 주세요.", "tone": "주의", "component": "안내 페이지" },
+        { "id": "trv-010", "situation": "통화/문자 불포함 안내", "text": "이 요금제는 데이터만 제공돼요. 통화가 필요하면 통화 포함 요금제를 확인해 보세요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "trv-011", "situation": "유효기간 안내", "text": "첫 데이터 사용일부터 {days}일간 이용할 수 있어요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "trv-012", "situation": "시차 안내", "text": "현지 시간은 한국보다 {diff}시간 느려요. 유심 유효기간은 현지 시간 기준이에요.", "tone": "설명", "component": "여행 정보" },
+        { "id": "trv-013", "situation": "핫스팟 사용 안내", "text": "핫스팟(테더링)으로 다른 기기에서도 데이터를 함께 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-014", "situation": "귀국 후 원래 유심 복구", "text": "여행이 끝나면 기존 유심으로 다시 바꿔 넣으면 돼요. 재부팅하면 자동 연결!", "tone": "안내", "component": "가이드" }
       ]
     },
     "account": {
@@ -113,7 +150,15 @@
         { "id": "acc-001", "situation": "로그인 실패", "text": "아이디 또는 비밀번호가 일치하지 않아요. 다시 확인해 주세요.", "tone": "안내", "component": "로그인 폼" },
         { "id": "acc-002", "situation": "비밀번호 재설정", "text": "가입한 이메일로 재설정 링크를 보냈어요. 메일함을 확인해 주세요.", "tone": "안내", "component": "확인 페이지" },
         { "id": "acc-003", "situation": "회원 탈퇴 확인", "text": "정말 탈퇴하시겠어요? 탈퇴하면 주문 내역과 혜택이 모두 사라져요.", "tone": "주의", "component": "확인 모달" },
-        { "id": "acc-004", "situation": "개인정보 수정 완료", "text": "정보가 수정됐어요.", "tone": "확인", "component": "토스트" }
+        { "id": "acc-004", "situation": "개인정보 수정 완료", "text": "정보가 수정됐어요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-005", "situation": "알림 설정 안내", "text": "원하는 알림만 골라 받을 수 있어요. 설정에서 변경해 보세요.", "tone": "안내", "component": "설정 페이지" },
+        { "id": "acc-006", "situation": "주문 내역 조회", "text": "지금까지 주문한 유심을 한눈에 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "acc-007", "situation": "결제 수단 등록", "text": "자주 쓰는 카드를 등록하면 다음 주문이 더 빨라져요.", "tone": "추천", "component": "결제 관리" },
+        { "id": "acc-008", "situation": "결제 수단 삭제", "text": "등록된 카드를 삭제했어요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-009", "situation": "포인트 안내", "text": "현재 보유 포인트는 {point}원이에요. 주문 시 바로 사용할 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "acc-010", "situation": "포인트 만료 임박", "text": "포인트 {point}원이 곧 만료돼요. 주문 시 사용해 보세요!", "tone": "긴급", "component": "푸시 알림" },
+        { "id": "acc-011", "situation": "소셜 계정 연동", "text": "카카오 계정이 연동됐어요. 다음부터 간편 로그인이 가능해요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-012", "situation": "휴면 계정 복구", "text": "오랜만이에요! 본인인증을 하면 계정이 다시 활성화돼요.", "tone": "친근", "component": "복구 페이지" }
       ]
     },
     "support": {
@@ -122,7 +167,15 @@
         { "id": "sup-001", "situation": "1:1 문의 접수", "text": "문의가 접수됐어요. 영업일 기준 1일 내 답변드릴게요.", "tone": "안내", "component": "확인 페이지" },
         { "id": "sup-002", "situation": "FAQ 안내", "text": "자주 묻는 질문에서 답변을 찾아보세요.", "tone": "안내", "component": "고객센터" },
         { "id": "sup-003", "situation": "채팅 상담 시작", "text": "안녕하세요! 무엇을 도와드릴까요?", "tone": "친근", "component": "채팅" },
-        { "id": "sup-004", "situation": "환불 접수 완료", "text": "환불 요청이 접수됐어요. 3~5 영업일 내 처리될 예정이에요.", "tone": "안내", "component": "확인 페이지" }
+        { "id": "sup-004", "situation": "환불 접수 완료", "text": "환불 요청이 접수됐어요. 3~5 영업일 내 처리될 예정이에요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "sup-005", "situation": "고객센터 운영시간", "text": "고객센터는 평일 09:00~18:00에 운영해요. 문의를 남기면 순서대로 답변드릴게요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-006", "situation": "교환 안내", "text": "수령 후 7일 이내에 교환 요청할 수 있어요. 개통 전 상품만 가능해요.", "tone": "안내", "component": "교환 페이지" },
+        { "id": "sup-007", "situation": "환불 불가 안내", "text": "이미 개통된 유심은 환불이 어려워요. 자세한 내용은 고객센터로 문의해 주세요.", "tone": "사과", "component": "안내 모달" },
+        { "id": "sup-008", "situation": "만족도 조사", "text": "유심사 서비스는 어떠셨나요? 소중한 의견을 들려주세요.", "tone": "친근", "component": "설문 모달" },
+        { "id": "sup-009", "situation": "상담 대기 안내", "text": "현재 상담 대기가 많아요. 예상 대기 시간은 약 {time}분이에요.", "tone": "안내", "component": "채팅" },
+        { "id": "sup-010", "situation": "상담 종료", "text": "상담이 종료됐어요. 더 궁금한 점이 있으면 언제든 문의해 주세요!", "tone": "친근", "component": "채팅" },
+        { "id": "sup-011", "situation": "불편 접수 감사", "text": "알려주셔서 감사해요. 빠르게 확인하고 개선할게요.", "tone": "사과", "component": "확인 페이지" },
+        { "id": "sup-012", "situation": "긴급 장애 공지", "text": "일부 서비스에 접속이 어려운 상황이에요. 빠르게 복구하고 있어요.", "tone": "사과", "component": "공지 배너" }
       ]
     },
     "system": {
@@ -132,7 +185,17 @@
         { "id": "sys-002", "situation": "서버 점검", "text": "더 나은 서비스를 위해 점검 중이에요. 곧 다시 만나요!", "tone": "안내", "component": "점검 페이지" },
         { "id": "sys-003", "situation": "세션 만료", "text": "안전을 위해 자동으로 로그아웃됐어요. 다시 로그인해 주세요.", "tone": "안내", "component": "모달" },
         { "id": "sys-004", "situation": "업데이트 안내", "text": "새로운 기능이 추가됐어요! 업데이트하고 더 편리하게 이용해 보세요.", "tone": "친근", "component": "배너" },
-        { "id": "sys-005", "situation": "빈 상태(Empty State)", "text": "아직 주문 내역이 없어요. 첫 유심을 주문해 보세요!", "tone": "친근", "component": "빈 페이지" }
+        { "id": "sys-005", "situation": "빈 상태(Empty State)", "text": "아직 주문 내역이 없어요. 첫 유심을 주문해 보세요!", "tone": "친근", "component": "빈 페이지" },
+        { "id": "sys-006", "situation": "카메라 권한 요청", "text": "QR코드 스캔을 위해 카메라 접근이 필요해요.", "tone": "안내", "component": "권한 요청" },
+        { "id": "sys-007", "situation": "로딩 중", "text": "잠시만요, 가져오고 있어요...", "tone": "안내", "component": "로딩 스피너" },
+        { "id": "sys-008", "situation": "페이지 없음 (404)", "text": "페이지를 찾을 수 없어요. 주소를 다시 확인해 주세요.", "tone": "안내", "component": "에러 페이지" },
+        { "id": "sys-009", "situation": "앱 업데이트 필수", "text": "새 버전이 나왔어요! 업데이트해야 계속 이용할 수 있어요.", "tone": "주의", "component": "강제 업데이트 모달" },
+        { "id": "sys-010", "situation": "오프라인 모드", "text": "인터넷에 연결되지 않았어요. 연결 후 자동으로 새로고침돼요.", "tone": "안내", "component": "오프라인 배너" },
+        { "id": "sys-011", "situation": "클립보드 복사 완료", "text": "복사됐어요!", "tone": "확인", "component": "토스트" },
+        { "id": "sys-012", "situation": "입력값 오류", "text": "올바른 형식으로 입력해 주세요.", "tone": "안내", "component": "인라인 에러" },
+        { "id": "sys-013", "situation": "필수 항목 누락", "text": "필수 항목을 입력해 주세요.", "tone": "안내", "component": "인라인 에러" },
+        { "id": "sys-014", "situation": "저장 완료", "text": "변경사항이 저장됐어요.", "tone": "확인", "component": "토스트" },
+        { "id": "sys-015", "situation": "삭제 확인", "text": "정말 삭제하시겠어요? 이 작업은 되돌릴 수 없어요.", "tone": "주의", "component": "확인 모달" }
       ]
     },
     "marketing": {
