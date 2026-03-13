@@ -1,7 +1,7 @@
 {
   "meta": {
     "service": "유심사 (Usimgle)",
-    "description": "USIM/SIM 카드 온라인 마켓플레이스",
+    "description": "글로벌 eSIM/USIM 해외 데이터 로밍 플랫폼 (148개국+, 가제트코리아 운영)",
     "version": "1.0.0",
     "lastUpdated": "2026-03-13"
   },
@@ -42,7 +42,11 @@
         { "id": "brw-002", "situation": "필터 적용 결과 없음", "text": "조건에 맞는 상품이 없어요. 필터를 조정해 보세요.", "tone": "안내", "component": "상품 목록" },
         { "id": "brw-003", "situation": "인기 상품 추천", "text": "지금 가장 많이 찾는 유심이에요", "tone": "추천", "component": "상품 카드" },
         { "id": "brw-004", "situation": "상품 비교 안내", "text": "최대 3개까지 비교할 수 있어요. 나에게 맞는 유심을 골라보세요.", "tone": "안내", "component": "비교 페이지" },
-        { "id": "brw-005", "situation": "데이터 용량 설명", "text": "월 5GB면 하루 약 170MB, 웹서핑과 SNS를 편하게 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" }
+        { "id": "brw-005", "situation": "데이터 용량 설명", "text": "월 5GB면 하루 약 170MB, 웹서핑과 SNS를 편하게 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "brw-006", "situation": "여행지 검색", "text": "어디로 여행하세요? 나라를 선택하면 맞춤 요금제를 추천해 드려요.", "tone": "친근", "component": "검색" },
+        { "id": "brw-007", "situation": "eSIM vs 실물유심 선택", "text": "eSIM은 QR로 바로 설치! 실물유심은 배송 후 장착하면 돼요.", "tone": "설명", "component": "상품 선택" },
+        { "id": "brw-008", "situation": "로컬망 vs 로밍망 설명", "text": "로컬망은 현지 통신사에 직접 연결돼 속도가 빠르고 안정적이에요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "brw-009", "situation": "기기 호환성 안내", "text": "내 폰이 eSIM을 지원하는지 확인해 보세요. *#06# 을 누르면 알 수 있어요.", "tone": "안내", "component": "상품 상세" }
       ]
     },
     "order": {
@@ -51,7 +55,8 @@
         { "id": "ord-001", "situation": "장바구니 담기 완료", "text": "장바구니에 담았어요! 바로 주문할까요?", "tone": "확인", "component": "토스트" },
         { "id": "ord-002", "situation": "주문서 작성 안내", "text": "배송 정보를 입력해 주세요. 유심은 주소지로 배송돼요.", "tone": "안내", "component": "주문서" },
         { "id": "ord-003", "situation": "결제 진행 중", "text": "결제를 처리하고 있어요. 잠시만 기다려 주세요.", "tone": "안내", "component": "로딩" },
-        { "id": "ord-004", "situation": "결제 완료", "text": "주문이 완료됐어요! 빠르게 배송 준비할게요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "ord-004", "situation": "결제 완료 (실물유심)", "text": "주문이 완료됐어요! 빠르게 배송 준비할게요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "ord-008", "situation": "결제 완료 (eSIM)", "text": "eSIM 구매가 완료됐어요! 바로 설치 방법을 안내해 드릴게요.", "tone": "축하", "component": "완료 페이지" },
         { "id": "ord-005", "situation": "결제 실패", "text": "결제가 완료되지 않았어요. 카드 정보를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러 모달" },
         { "id": "ord-006", "situation": "재고 소진", "text": "이 상품은 일시적으로 품절이에요. 입고 알림을 받아보세요.", "tone": "안내", "component": "상품 상세" },
         { "id": "ord-007", "situation": "쿠폰 적용 완료", "text": "쿠폰이 적용됐어요! 할인된 금액을 확인해 보세요.", "tone": "확인", "component": "주문서" }
@@ -73,6 +78,33 @@
         { "id": "act-002", "situation": "개통 완료", "text": "개통이 완료됐어요! 이제 새 유심으로 통화와 데이터를 이용하세요.", "tone": "축하", "component": "완료 페이지" },
         { "id": "act-003", "situation": "개통 실패", "text": "개통 중 문제가 발생했어요. 고객센터(1234-5678)로 연락해 주세요.", "tone": "안내", "component": "에러" },
         { "id": "act-004", "situation": "번호이동 안내", "text": "기존 번호를 그대로 쓸 수 있어요. 인증 후 자동으로 번호이동이 진행돼요.", "tone": "안내", "component": "가이드" }
+      ]
+    },
+    "esim": {
+      "label": "eSIM 설치/관리",
+      "entries": [
+        { "id": "esm-001", "situation": "eSIM QR코드 발급", "text": "eSIM QR코드가 준비됐어요! 아래 QR을 스캔해서 설치하세요.", "tone": "안내", "component": "QR 페이지" },
+        { "id": "esm-002", "situation": "eSIM 원클릭 설치", "text": "'설치하기' 버튼을 누르면 자동으로 eSIM이 설치돼요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-003", "situation": "eSIM 수동 설치 안내", "text": "설정 > 셀룰러 > eSIM 추가에서 아래 코드를 직접 입력해 주세요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-004", "situation": "eSIM 설치 완료", "text": "eSIM 설치가 완료됐어요! 여행지에 도착하면 데이터를 켜주세요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "esm-005", "situation": "eSIM 활성화 타이밍", "text": "출발 전에 설치하고, 현지 도착 후 데이터 로밍을 켜면 바로 사용할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-006", "situation": "eSIM 설치 실패", "text": "eSIM 설치에 실패했어요. 기기가 eSIM을 지원하는지 확인해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "esm-007", "situation": "eSIM 데이터 충전", "text": "데이터가 부족하면 언제든 충전할 수 있어요. 추가 용량을 선택해 주세요.", "tone": "안내", "component": "충전 페이지" },
+        { "id": "esm-008", "situation": "eSIM 삭제 안내", "text": "여행이 끝나면 eSIM을 삭제해도 돼요. 설정 > 셀룰러에서 제거할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-009", "situation": "eSIM 미지원 기기", "text": "이 기기는 eSIM을 지원하지 않아요. 실물 유심을 추천드려요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "esm-010", "situation": "eSIM 데이터 사용량 확인", "text": "현재 데이터 사용량을 확인해 보세요. 남은 용량도 함께 볼 수 있어요.", "tone": "안내", "component": "마이페이지" }
+      ]
+    },
+    "travel": {
+      "label": "여행/로밍",
+      "entries": [
+        { "id": "trv-001", "situation": "출발 전 체크리스트", "text": "여행 전 꼭 확인하세요! eSIM 설치 → 데이터 로밍 ON → 출발!", "tone": "안내", "component": "체크리스트" },
+        { "id": "trv-002", "situation": "현지 도착 활성화", "text": "현지에 도착했나요? 데이터 로밍을 켜면 바로 인터넷을 쓸 수 있어요.", "tone": "친근", "component": "푸시 알림" },
+        { "id": "trv-003", "situation": "데이터 소진 임박", "text": "데이터가 거의 다 찼어요. 지금 충전하면 여행 중 끊김 없이 쓸 수 있어요.", "tone": "긴급", "component": "푸시 알림" },
+        { "id": "trv-004", "situation": "데이터 소진 완료", "text": "데이터를 모두 사용했어요. 추가 충전하면 바로 다시 연결돼요.", "tone": "안내", "component": "알림" },
+        { "id": "trv-005", "situation": "구글맵 무료 데이터", "text": "구글맵은 데이터 차감 없이 무료로 이용할 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-006", "situation": "긴급 연락처 안내", "text": "긴급 상황 시 현지 대한민국 대사관 또는 119로 연락하세요.", "tone": "안내", "component": "긴급 페이지" },
+        { "id": "trv-007", "situation": "여행 종료 안내", "text": "즐거운 여행이었나요? 사용 후기를 남기면 포인트를 드려요!", "tone": "친근", "component": "푸시 알림" }
       ]
     },
     "account": {

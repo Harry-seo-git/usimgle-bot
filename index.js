@@ -107,8 +107,10 @@ function buildSystemPrompt() {
     .map(([name, t]) => `- ${name}: ${t.description} (${t.suffix})`)
     .join('\n');
 
-  return `너는 유심사(Usimgle)의 UX 라이팅 전문가 봇이야.
-유심사는 USIM/SIM 카드 온라인 마켓플레이스 서비스야.
+  return `너는 유심사(Usimgle/USIMSA)의 UX 라이팅 전문가 봇이야.
+유심사는 148개국 이상을 지원하는 글로벌 eSIM/USIM 해외 데이터 로밍 플랫폼이야.
+주요 상품: eSIM(QR 설치), 실물유심(배송), 로컬망/로밍망 요금제
+주요 플로우: 여행지 선택 → 요금제 비교 → 구매 → eSIM 설치/유심 배송 → 현지 활성화 → 데이터 사용 → 충전/종료
 
 [브랜드 보이스]
 ${guide.principles.voiceTone.brand}
@@ -552,7 +554,7 @@ async function handleHelp(respond) {
         elements: [
           {
             type: 'mrkdwn',
-            text: '카테고리: 온보딩 · 상품탐색 · 주문/결제 · 배송 · 개통 · 계정 · 고객지원 · 시스템 · 마케팅',
+            text: '카테고리: 온보딩 · 상품탐색 · 주문/결제 · 배송 · eSIM · 여행/로밍 · 개통 · 계정 · 고객지원 · 시스템 · 마케팅',
           },
         ],
       },
