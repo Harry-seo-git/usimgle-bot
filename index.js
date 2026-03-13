@@ -140,7 +140,7 @@ function formatEntryCompact(e) {
 }
 
 // --- 슬래시 커맨드 핸들러 ---
-app.command('/ux', async ({ command, ack, respond }) => {
+app.command('/uxr', async ({ command, ack, respond }) => {
   await ack();
 
   const rawText = (command.text || '').trim();
@@ -224,7 +224,7 @@ app.command('/ux', async ({ command, ack, respond }) => {
 // --- 핸들러: 검색 ---
 async function handleSearch(keyword, respond) {
   if (!keyword) {
-    return respond({ response_type: 'ephemeral', text: '검색할 키워드를 입력해 주세요.\n예: `/ux 검색 결제`' });
+    return respond({ response_type: 'ephemeral', text: '검색할 키워드를 입력해 주세요.\n예: `/uxr 검색 결제`' });
   }
 
   const results = searchGuide(keyword);
@@ -238,7 +238,7 @@ async function handleSearch(keyword, respond) {
   }
 
   if (!results.length && !sheetResults.length) {
-    return respond({ response_type: 'ephemeral', text: `"${keyword}"에 대한 UX 문구가 없어요. \`/ux 추천 ${keyword}\`로 AI 추천을 받아보세요.` });
+    return respond({ response_type: 'ephemeral', text: `"${keyword}"에 대한 UX 문구가 없어요. \`/uxr 추천 ${keyword}\`로 AI 추천을 받아보세요.` });
   }
 
   const blocks = [
@@ -284,7 +284,7 @@ async function handleCategory(name, respond) {
       .join('\n');
     return respond({
       response_type: 'ephemeral',
-      text: `*카테고리 목록*\n${cats}\n\n예: \`/ux 카테고리 주문\``,
+      text: `*카테고리 목록*\n${cats}\n\n예: \`/uxr 카테고리 주문\``,
     });
   }
 
@@ -316,7 +316,7 @@ async function handleCategory(name, respond) {
 // --- 핸들러: AI 추천 ---
 async function handleSuggest(situation, respond) {
   if (!situation) {
-    return respond({ response_type: 'ephemeral', text: '상황을 설명해 주세요.\n예: `/ux 추천 사용자가 잘못된 이메일을 입력했을 때`' });
+    return respond({ response_type: 'ephemeral', text: '상황을 설명해 주세요.\n예: `/uxr 추천 사용자가 잘못된 이메일을 입력했을 때`' });
   }
 
   // 먼저 가이드에서 유사한 문구를 찾아 컨텍스트로 제공
@@ -465,7 +465,7 @@ app.action('revise_suggest', async ({ action, ack, respond }) => {
 // --- 핸들러: 피드백 ---
 async function handleFeedback(text, respond) {
   if (!text) {
-    return respond({ response_type: 'ephemeral', text: '피드백받을 문구를 입력해 주세요.\n예: `/ux 피드백 오류가 발생했습니다`' });
+    return respond({ response_type: 'ephemeral', text: '피드백받을 문구를 입력해 주세요.\n예: `/uxr 피드백 오류가 발생했습니다`' });
   }
 
   const prompt = `${buildSystemPrompt()}
@@ -508,7 +508,7 @@ async function handleAdd(text, respond) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
-      text: '등록 형식: `/ux 등록 카테고리|문구|톤|컴포넌트`\n예: `/ux 등록 주문|주문이 완료됐어요!|축하|토스트`',
+      text: '등록 형식: `/uxr 등록 카테고리|문구|톤|컴포넌트`\n예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
     });
   }
 
@@ -516,7 +516,7 @@ async function handleAdd(text, respond) {
   if (parts.length < 2) {
     return respond({
       response_type: 'ephemeral',
-      text: '최소 카테고리와 문구를 `|`로 구분해서 입력해 주세요.\n예: `/ux 등록 주문|주문이 완료됐어요!|축하|토스트`',
+      text: '최소 카테고리와 문구를 `|`로 구분해서 입력해 주세요.\n예: `/uxr 등록 주문|주문이 완료됐어요!|축하|토스트`',
     });
   }
 
@@ -559,13 +559,13 @@ async function handleTone(name, respond) {
       .join('\n');
     return respond({
       response_type: 'ephemeral',
-      text: `*톤 가이드*\n\n${tones}\n\n특정 톤 조회: \`/ux 톤 친근\``,
+      text: `*톤 가이드*\n\n${tones}\n\n특정 톤 조회: \`/uxr 톤 친근\``,
     });
   }
 
   const tone = guide.toneGuide[name];
   if (!tone) {
-    return respond({ response_type: 'ephemeral', text: `"${name}" 톤을 찾을 수 없어요. \`/ux 톤\`으로 목록을 확인해 주세요.` });
+    return respond({ response_type: 'ephemeral', text: `"${name}" 톤을 찾을 수 없어요. \`/uxr 톤\`으로 목록을 확인해 주세요.` });
   }
 
   // 해당 톤을 사용하는 문구 예시
@@ -643,7 +643,7 @@ async function handleCheck(text, respond) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
-      text: '검사할 문구를 입력해 주세요.\n예: `/ux 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
+      text: '검사할 문구를 입력해 주세요.\n예: `/uxr 검사 결제 오류가 발생하였습니다. 다시 시도하십시오.`',
     });
   }
 
@@ -776,7 +776,7 @@ async function handleTranslate(text, respond) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
-      text: '번역할 문구 또는 ID를 입력해 주세요.\n예: `/ux 번역 ord-004` 또는 `/ux 번역 en 결제가 완료됐어요`',
+      text: '번역할 문구 또는 ID를 입력해 주세요.\n예: `/uxr 번역 ord-004` 또는 `/uxr 번역 en 결제가 완료됐어요`',
     });
   }
 
@@ -850,7 +850,7 @@ async function handleCompare(text, respond) {
   if (!text || !text.includes('vs')) {
     return respond({
       response_type: 'ephemeral',
-      text: '비교할 두 문구를 `vs`로 구분해 주세요.\n예: `/ux 비교 결제가 처리되었습니다 vs 결제를 완료했어요`',
+      text: '비교할 두 문구를 `vs`로 구분해 주세요.\n예: `/uxr 비교 결제가 처리되었습니다 vs 결제를 완료했어요`',
     });
   }
 
@@ -902,7 +902,7 @@ async function handleBulkCheck(text, respond) {
   if (!text) {
     return respond({
       response_type: 'ephemeral',
-      text: '여러 문구를 `/`로 구분해서 입력해 주세요.\n예: `/ux 벌크검사 결제 실패입니다/로그인 해주십시오/배송이 완료됐어요`',
+      text: '여러 문구를 `/`로 구분해서 입력해 주세요.\n예: `/uxr 벌크검사 결제 실패입니다/로그인 해주십시오/배송이 완료됐어요`',
     });
   }
 
@@ -960,7 +960,7 @@ async function handleBulkCheck(text, respond) {
     blocks.push({ type: 'divider' });
     blocks.push({
       type: 'context',
-      elements: [{ type: 'mrkdwn', text: '개별 상세 검사: `/ux 검사 [문구]`' }],
+      elements: [{ type: 'mrkdwn', text: '개별 상세 검사: `/uxr 검사 [문구]`' }],
     });
   }
 
@@ -1109,12 +1109,12 @@ async function handleHelp(respond) {
           type: 'mrkdwn',
           text: [
             '*기본*',
-            '`/ux 검색 [키워드]` — 키워드로 UX 문구 검색',
-            '`/ux 카테고리 [이름]` — 카테고리별 문구 조회',
-            '`/ux 톤 [톤이름]` — 톤 가이드 조회',
-            '`/ux 원칙` — 라이팅 원칙 조회',
-            '`/ux 통계` — 가이드 현황 대시보드',
-            '`/ux 랜덤` — 오늘의 UX 라이팅 팁',
+            '`/uxr 검색 [키워드]` — 키워드로 UX 문구 검색',
+            '`/uxr 카테고리 [이름]` — 카테고리별 문구 조회',
+            '`/uxr 톤 [톤이름]` — 톤 가이드 조회',
+            '`/uxr 원칙` — 라이팅 원칙 조회',
+            '`/uxr 통계` — 가이드 현황 대시보드',
+            '`/uxr 랜덤` — 오늘의 UX 라이팅 팁',
           ].join('\n'),
         },
       },
@@ -1124,10 +1124,10 @@ async function handleHelp(respond) {
           type: 'mrkdwn',
           text: [
             '*AI 기능*',
-            '`/ux 추천 [상황설명]` — AI가 상황에 맞는 문구 제안',
-            '`/ux 피드백 [문구]` — 기존 문구의 개선점 분석',
-            '`/ux 비교 [문구A] vs [문구B]` — 두 문구 비교 분석',
-            '`/ux 번역 [문구 또는 ID]` — 다국어 번역',
+            '`/uxr 추천 [상황설명]` — AI가 상황에 맞는 문구 제안',
+            '`/uxr 피드백 [문구]` — 기존 문구의 개선점 분석',
+            '`/uxr 비교 [문구A] vs [문구B]` — 두 문구 비교 분석',
+            '`/uxr 번역 [문구 또는 ID]` — 다국어 번역',
           ].join('\n'),
         },
       },
@@ -1137,9 +1137,9 @@ async function handleHelp(respond) {
           type: 'mrkdwn',
           text: [
             '*검사/관리*',
-            '`/ux 검사 [문구]` — 가이드라인 일관성 검사',
-            '`/ux 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
-            '`/ux 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
+            '`/uxr 검사 [문구]` — 가이드라인 일관성 검사',
+            '`/uxr 벌크검사 [문구1/문구2/...]` — 여러 문구 한번에 검사',
+            '`/uxr 등록 [카테고리|문구|톤|컴포넌트]` — 새 문구 등록',
           ].join('\n'),
         },
       },
