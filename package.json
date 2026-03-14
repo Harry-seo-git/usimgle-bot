@@ -1,6 +1,6 @@
 {
   "name": "usimgle-ux-writing-bot",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "유심사 UX 라이팅 가이드 슬랙 봇 - UX 문구 검색, AI 추천, 피드백",
   "main": "index.js",
   "scripts": {
