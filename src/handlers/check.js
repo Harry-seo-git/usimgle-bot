@@ -49,6 +49,8 @@ async function handleCheck(text, respond) {
   }
 
   // AI 기반 심층 분석
+  await respond({ response_type: 'ephemeral', text: '문구를 검사하고 있어요... 잠시만 기다려 주세요.' });
+
   const userMessage = `아래 UX 문구를 유심사 가이드라인 기준으로 간단히 점수(100점 만점)와 한줄 코멘트를 달아줘.
 평가 기준: 해요체 사용, 40자 이내, 능동태, 긍정문, 명확성
 답변 형식: "점수: XX/100 | 코멘트: ..."

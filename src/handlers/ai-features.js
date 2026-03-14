@@ -10,6 +10,8 @@ async function handleSuggest(situation, respond) {
     return respond({ response_type: 'ephemeral', text: '상황을 설명해 주세요.\n예: `/uxr 추천 사용자가 잘못된 이메일을 입력했을 때`' });
   }
 
+  await respond({ response_type: 'ephemeral', text: '추천 문구를 생성하고 있어요... 잠시만 기다려 주세요.' });
+
   const similar = searchGuide(situation).slice(0, 3);
   const context = similar.length
     ? `\n\n[참고할 기존 문구]\n${similar.map((e) => `- ${e.situation}: "${e.text}" (톤: ${e.tone})`).join('\n')}`
@@ -75,6 +77,8 @@ async function handleFeedback(text, respond) {
     return respond({ response_type: 'ephemeral', text: '피드백받을 문구를 입력해 주세요.\n예: `/uxr 피드백 오류가 발생했습니다`' });
   }
 
+  await respond({ response_type: 'ephemeral', text: '문구를 분석하고 있어요... 잠시만 기다려 주세요.' });
+
   const userMessage = `아래 UX 문구를 유심사 라이팅 가이드 기준으로 분석해줘.
 분석 항목: 톤 적절성, 명확성, 길이, 긍정/부정문, 능동/수동태, 개선 포인트
 마지막에 개선된 문구 2개를 제안해줘.
@@ -110,6 +114,8 @@ async function handleCompare(text, respond) {
   if (!textA || !textB) {
     return respond({ response_type: 'ephemeral', text: '`vs` 양쪽에 문구를 입력해 주세요.' });
   }
+
+  await respond({ response_type: 'ephemeral', text: '두 문구를 비교하고 있어요... 잠시만 기다려 주세요.' });
 
   const userMessage = `아래 두 UX 문구를 유심사 가이드라인 기준으로 비교 분석해줘.
 
@@ -175,6 +181,8 @@ async function handleTranslate(text, respond) {
 
   const langNames = { en: '영어', ja: '일본어', zh: '중국어', es: '스페인어', fr: '프랑스어' };
   const targetLangStr = targetLangs.map((l) => langNames[l] || l).join(', ');
+
+  await respond({ response_type: 'ephemeral', text: '번역을 준비하고 있어요... 잠시만 기다려 주세요.' });
 
   const userMessage = `아래 한국어 UX 문구를 ${targetLangStr}로 번역해줘.
 번역 시 유심사 브랜드 톤(친근, 명확, 간결)을 유지하고, 각 언어의 자연스러운 UX 문구 관습을 따라줘.
