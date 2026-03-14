@@ -32,7 +32,6 @@ const {
 // --- Slack 앱 초기화 ---
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  processBeforeResponse: true,
 });
 
 const app = new App({
