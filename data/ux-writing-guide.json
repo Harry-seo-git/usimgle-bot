@@ -1,0 +1,333 @@
+{
+  "meta": {
+    "service": "유심사 (USIMSA)",
+    "description": "글로벌 eSIM/USIM 해외 데이터 로밍 플랫폼 (200개국+, 700만 고객, 가제트코리아 운영)",
+    "version": "2.0.0",
+    "lastUpdated": "2026-03-13",
+    "slogan": "700만의 여행 필수품, 유심사",
+    "products": ["eSIM", "물리유심(USIM)", "포켓와이파이"],
+    "networks": ["로컬망 (현지 통신사 직접 연결)", "로밍망 (제휴 통신사 로밍)"],
+    "planTypes": ["완전 무제한", "일일 용량 제한형 (저속 무제한)", "총량형"],
+    "keyFeatures": ["QR코드 스캔 설치", "원클릭 설치", "데이터 충전/연장", "유심사케어 보상", "구글맵 무료 데이터", "24시간 고객센터", "3% 무제한 적립"]
+  },
+  "principles": {
+    "voiceTone": {
+      "brand": "친근하고 신뢰감 있는 통신 전문가",
+      "keywords": ["명확", "간결", "친근", "신뢰", "전문"],
+      "rules": [
+        "존댓말(해요체)을 기본으로 사용해요",
+        "기술 용어는 쉬운 말로 풀어서 설명해요",
+        "사용자의 행동을 긍정적으로 안내해요",
+        "불안감을 줄이고 다음 단계를 명확히 알려줘요",
+        "이모지는 핵심 포인트에만 절제해서 사용해요"
+      ]
+    },
+    "writingRules": [
+      { "rule": "한 문장은 40자 이내로 작성", "example": "유심이 3일 내 배송돼요" },
+      { "rule": "능동태를 사용", "bad": "결제가 처리되었습니다", "good": "결제를 완료했어요" },
+      { "rule": "부정문보다 긍정문 사용", "bad": "입력하지 않으면 진행할 수 없습니다", "good": "정보를 입력하면 바로 진행돼요" },
+      { "rule": "CTA(행동유도) 버튼은 동사로 시작", "example": "유심 주문하기, 배송 조회하기" },
+      { "rule": "에러 메시지는 원인 + 해결방법 구조", "example": "카드 정보를 확인해 주세요. 카드번호 16자리를 다시 입력해 주세요." }
+    ]
+  },
+  "categories": {
+    "onboarding": {
+      "label": "온보딩/가입",
+      "entries": [
+        { "id": "onb-001", "situation": "첫 방문 환영", "text": "유심사에 오신 걸 환영해요! 알뜰하게 유심을 만나보세요.", "tone": "친근", "component": "배너" },
+        { "id": "onb-002", "situation": "회원가입 유도", "text": "1분이면 가입 완료! 첫 주문 할인 혜택도 받아보세요.", "tone": "친근", "component": "팝업" },
+        { "id": "onb-003", "situation": "회원가입 완료", "text": "가입을 완료했어요! 지금 바로 나에게 맞는 유심을 찾아보세요.", "tone": "축하", "component": "확인 페이지" },
+        { "id": "onb-004", "situation": "본인인증 안내", "text": "안전한 서비스를 위해 본인인증이 필요해요. 1분이면 완료돼요.", "tone": "안내", "component": "인증 페이지" },
+        { "id": "onb-005", "situation": "소셜 로그인 안내", "text": "카카오, 네이버, 구글로 간편하게 시작하세요.", "tone": "친근", "component": "로그인 페이지" },
+        { "id": "onb-006", "situation": "이메일 인증 요청", "text": "인증 메일을 보냈어요. 메일함에서 확인 버튼을 눌러주세요.", "tone": "안내", "component": "인증 페이지" },
+        { "id": "onb-007", "situation": "이메일 인증 완료", "text": "이메일 인증이 완료됐어요! 이제 모든 서비스를 이용할 수 있어요.", "tone": "축하", "component": "확인 페이지" },
+        { "id": "onb-008", "situation": "튜토리얼 안내", "text": "유심사 사용법을 간단히 알려드릴게요. 건너뛸 수도 있어요.", "tone": "친근", "component": "온보딩 슬라이드" },
+        { "id": "onb-009", "situation": "튜토리얼 건너뛰기", "text": "나중에 마이페이지에서 다시 볼 수 있어요.", "tone": "안내", "component": "토스트" },
+        { "id": "onb-010", "situation": "앱 알림 허용 요청", "text": "배송 현황과 여행지 꿀팁을 알림으로 받아보세요.", "tone": "추천", "component": "권한 요청" },
+        { "id": "onb-011", "situation": "위치 권한 요청", "text": "현재 위치 기반으로 가장 적합한 요금제를 추천해 드려요.", "tone": "설명", "component": "권한 요청" },
+        { "id": "onb-012", "situation": "재방문 환영", "text": "다시 오셨군요! 지난번에 보던 요금제를 이어서 확인해 보세요.", "tone": "친근", "component": "배너" },
+        { "id": "onb-013", "situation": "700만 고객 신뢰 배너", "text": "700만 여행자가 선택한 유심사! 지금 시작해 보세요.", "tone": "친근", "component": "메인 배너" },
+        { "id": "onb-014", "situation": "GSMA 정회원 신뢰", "text": "유심사는 국내 최초 GSMA 정회원으로, 글로벌 통신 품질을 보장해요.", "tone": "설명", "component": "신뢰 배너" },
+        { "id": "onb-015", "situation": "앱 설치 유도", "text": "유심사 앱이면 1분 만에 eSIM 구매부터 설치까지 끝! 지금 다운로드하세요.", "tone": "추천", "component": "앱 배너" }
+      ]
+    },
+    "browse": {
+      "label": "상품 탐색",
+      "entries": [
+        { "id": "brw-001", "situation": "검색 결과 없음", "text": "검색 결과가 없어요. 다른 키워드로 찾아볼까요?", "tone": "안내", "component": "검색 결과" },
+        { "id": "brw-002", "situation": "필터 적용 결과 없음", "text": "조건에 맞는 상품이 없어요. 필터를 조정해 보세요.", "tone": "안내", "component": "상품 목록" },
+        { "id": "brw-003", "situation": "인기 상품 추천", "text": "지금 가장 많이 찾는 유심이에요", "tone": "추천", "component": "상품 카드" },
+        { "id": "brw-004", "situation": "상품 비교 안내", "text": "최대 3개까지 비교할 수 있어요. 나에게 맞는 유심을 골라보세요.", "tone": "안내", "component": "비교 페이지" },
+        { "id": "brw-005", "situation": "데이터 용량 설명", "text": "월 5GB면 하루 약 170MB, 웹서핑과 SNS를 편하게 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "brw-006", "situation": "여행지 검색", "text": "어디로 여행하세요? 나라를 선택하면 맞춤 요금제를 추천해 드려요.", "tone": "친근", "component": "검색" },
+        { "id": "brw-007", "situation": "eSIM vs 실물유심 선택", "text": "eSIM은 QR로 바로 설치! 실물유심은 배송 후 장착하면 돼요.", "tone": "설명", "component": "상품 선택" },
+        { "id": "brw-008", "situation": "로컬망 vs 로밍망 설명", "text": "로컬망은 현지 통신사에 직접 연결돼 속도가 빠르고 안정적이에요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "brw-009", "situation": "기기 호환성 안내", "text": "내 폰이 eSIM을 지원하는지 확인해 보세요. *#06# 을 누르면 알 수 있어요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "brw-010", "situation": "완전 무제한 요금제 안내", "text": "데이터 걱정 없는 완전 무제한! 7,700원부터 시작해요.", "tone": "추천", "component": "상품 카드" },
+        { "id": "brw-011", "situation": "저속 무제한 요금제 안내", "text": "매일 5GB 사용 후에도 저속으로 계속 이용할 수 있어요. 5,900원부터.", "tone": "설명", "component": "상품 카드" },
+        { "id": "brw-012", "situation": "국가 선택 안내", "text": "어디로 떠나세요? 국가를 선택하면 맞춤 요금제를 보여드려요.", "tone": "친근", "component": "국가 검색" },
+        { "id": "brw-013", "situation": "지역 통합 요금제 추천", "text": "여러 나라를 이동하시나요? 유럽 30개국 통합 요금제가 더 경제적이에요.", "tone": "추천", "component": "상품 추천" },
+        { "id": "brw-014", "situation": "사용 기간 선택", "text": "여행 기간에 맞는 요금제를 골라보세요. 1일부터 30일까지 선택 가능해요.", "tone": "안내", "component": "필터" },
+        { "id": "brw-015", "situation": "로컬망 vs 로밍망 비교", "text": "로컬망은 속도가 빠르고, 로밍망은 데이터 충전이 가능해요.", "tone": "설명", "component": "비교 안내" },
+        { "id": "brw-016", "situation": "인기 여행지 바로가기", "text": "일본 · 미국 · 유럽 · 동남아 — 인기 여행지 요금제를 바로 확인하세요.", "tone": "추천", "component": "퀵 링크" },
+        { "id": "brw-017", "situation": "포켓와이파이 안내", "text": "여러 기기에서 함께 쓰려면 포켓와이파이가 편리해요.", "tone": "설명", "component": "상품 카드" },
+        { "id": "brw-018", "situation": "eSIM 지원 기기 확인", "text": "iPhone은 설정 > 셀룰러에서 'eSIM 추가' 버튼이 있으면 지원돼요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "brw-019", "situation": "Samsung eSIM 확인", "text": "Galaxy S23 이후, Z Flip4/Fold4 이후 모델에서 eSIM을 지원해요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "brw-020", "situation": "통화 포함 요금제", "text": "현지 통화가 필요하면 통화 포함 요금제를 선택해 보세요.", "tone": "추천", "component": "필터" }
+      ]
+    },
+    "order": {
+      "label": "주문/결제",
+      "entries": [
+        { "id": "ord-001", "situation": "장바구니 담기 완료", "text": "장바구니에 담았어요! 바로 주문할까요?", "tone": "확인", "component": "토스트" },
+        { "id": "ord-002", "situation": "주문서 작성 안내", "text": "배송 정보를 입력해 주세요. 유심은 주소지로 배송돼요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-003", "situation": "결제 진행 중", "text": "결제를 처리하고 있어요. 잠시만 기다려 주세요.", "tone": "안내", "component": "로딩" },
+        { "id": "ord-004", "situation": "결제 완료 (실물유심)", "text": "주문이 완료됐어요! 빠르게 배송 준비할게요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "ord-008", "situation": "결제 완료 (eSIM)", "text": "eSIM 구매가 완료됐어요! 바로 설치 방법을 안내해 드릴게요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "ord-005", "situation": "결제 실패", "text": "결제가 완료되지 않았어요. 카드 정보를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러 모달" },
+        { "id": "ord-006", "situation": "재고 소진", "text": "이 상품은 일시적으로 품절이에요. 입고 알림을 받아보세요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "ord-007", "situation": "쿠폰 적용 완료", "text": "쿠폰이 적용됐어요! 할인된 금액을 확인해 보세요.", "tone": "확인", "component": "주문서" },
+        { "id": "ord-009", "situation": "주문 취소 완료", "text": "주문이 취소됐어요. 결제 금액은 3~5 영업일 내 환불돼요.", "tone": "확인", "component": "확인 페이지" },
+        { "id": "ord-010", "situation": "주문 취소 불가", "text": "이미 배송이 시작돼서 취소가 어려워요. 수령 후 반품을 신청해 주세요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "ord-011", "situation": "결제 수단 변경", "text": "다른 결제 수단으로 변경할 수 있어요. 원하는 방법을 선택해 주세요.", "tone": "안내", "component": "결제 선택" },
+        { "id": "ord-012", "situation": "부분 환불 완료", "text": "일부 금액이 환불됐어요. 상세 내역을 확인해 보세요.", "tone": "확인", "component": "확인 페이지" },
+        { "id": "ord-013", "situation": "최소 주문 금액 미달", "text": "최소 주문 금액은 {price}원이에요. 상품을 더 담아주세요.", "tone": "안내", "component": "장바구니" },
+        { "id": "ord-014", "situation": "쿠폰 만료", "text": "이 쿠폰은 사용 기간이 지났어요. 다른 쿠폰을 확인해 보세요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-015", "situation": "재주문 안내", "text": "이전 주문을 그대로 다시 주문할 수 있어요.", "tone": "추천", "component": "주문 내역" },
+        { "id": "ord-016", "situation": "적립금 사용", "text": "보유 적립금 {point}원을 사용하면 결제 금액이 줄어들어요.", "tone": "안내", "component": "주문서" },
+        { "id": "ord-017", "situation": "쿠폰 선택", "text": "사용 가능한 쿠폰이 {count}개 있어요. 가장 할인이 큰 쿠폰을 추천해 드려요.", "tone": "추천", "component": "주문서" },
+        { "id": "ord-018", "situation": "eSIM 즉시 발급", "text": "eSIM은 결제 즉시 발급돼요. 배송을 기다릴 필요 없이 바로 설치하세요.", "tone": "확인", "component": "결제 완료" },
+        { "id": "ord-019", "situation": "알림톡 발송 완료", "text": "카카오톡 알림톡으로 QR코드와 설치 안내를 보내드렸어요.", "tone": "확인", "component": "발송 알림" },
+        { "id": "ord-020", "situation": "이메일 바우처 발송", "text": "이메일로도 바우처를 보내드렸어요. 스팸함도 확인해 주세요.", "tone": "안내", "component": "발송 알림" }
+      ]
+    },
+    "delivery": {
+      "label": "배송/수령",
+      "entries": [
+        { "id": "dlv-001", "situation": "배송 시작", "text": "유심이 출발했어요! 배송 현황을 실시간으로 확인하세요.", "tone": "안내", "component": "알림" },
+        { "id": "dlv-002", "situation": "배송 완료", "text": "유심이 도착했어요! 개통 방법을 안내해 드릴게요.", "tone": "축하", "component": "알림" },
+        { "id": "dlv-003", "situation": "배송 지연", "text": "배송이 조금 늦어지고 있어요. 빠르게 처리할게요. 불편을 드려 죄송해요.", "tone": "사과", "component": "알림" },
+        { "id": "dlv-004", "situation": "배송 조회", "text": "주문번호로 배송 현황을 확인해 보세요.", "tone": "안내", "component": "조회 페이지" },
+        { "id": "dlv-005", "situation": "배송지 변경", "text": "배송지를 변경했어요. 새 주소로 유심을 보내드릴게요.", "tone": "확인", "component": "토스트" },
+        { "id": "dlv-006", "situation": "배송지 변경 불가", "text": "이미 출발한 주문이라 배송지 변경이 어려워요. 고객센터로 문의해 주세요.", "tone": "사과", "component": "안내 모달" },
+        { "id": "dlv-007", "situation": "택배사 연결 안내", "text": "CJ대한통운으로 배송돼요. 송장번호로 직접 조회할 수도 있어요.", "tone": "안내", "component": "배송 상세" },
+        { "id": "dlv-008", "situation": "당일 출발 안내", "text": "오후 2시 전 주문은 오늘 바로 출발해요!", "tone": "확인", "component": "상품 상세" },
+        { "id": "dlv-009", "situation": "해외 배송 안내", "text": "해외 배송은 7~14일 소요돼요. eSIM을 이용하면 바로 받을 수 있어요.", "tone": "안내", "component": "주문서" },
+        { "id": "dlv-010", "situation": "공항 수령 안내", "text": "출국 당일 공항에서 직접 수령할 수 있어요. 수령 장소를 확인해 주세요.", "tone": "안내", "component": "수령 안내" },
+        { "id": "dlv-011", "situation": "편의점 수령 안내", "text": "가까운 편의점에서 받을 수 있어요. 수령 가능한 곳을 확인해 보세요.", "tone": "안내", "component": "배송 옵션" }
+      ]
+    },
+    "activation": {
+      "label": "개통/활성화",
+      "entries": [
+        { "id": "act-001", "situation": "개통 절차 안내", "text": "유심을 휴대폰에 넣고, 아래 순서대로 진행해 주세요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-002", "situation": "개통 완료", "text": "개통이 완료됐어요! 이제 새 유심으로 통화와 데이터를 이용하세요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "act-003", "situation": "개통 실패", "text": "개통 중 문제가 발생했어요. 고객센터(1234-5678)로 연락해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "act-004", "situation": "번호이동 안내", "text": "기존 번호를 그대로 쓸 수 있어요. 인증 후 자동으로 번호이동이 진행돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-005", "situation": "APN 설정 안내", "text": "데이터가 안 되면 APN 설정을 확인해 주세요. 아래 값을 입력하면 돼요.", "tone": "안내", "component": "설정 가이드" },
+        { "id": "act-006", "situation": "재부팅 요청", "text": "유심 장착 후 휴대폰을 한 번 껐다 켜주세요. 자동으로 연결돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-007", "situation": "듀얼심 설정 안내", "text": "기존 유심과 함께 쓸 수 있어요. 데이터용 회선으로 유심사를 선택해 주세요.", "tone": "설명", "component": "설정 가이드" },
+        { "id": "act-008", "situation": "개통 대기 중", "text": "개통을 처리하고 있어요. 최대 30분 정도 걸릴 수 있어요.", "tone": "안내", "component": "로딩" },
+        { "id": "act-009", "situation": "개통 예약 완료", "text": "출발일에 맞춰 자동으로 개통돼요. 따로 할 일은 없어요!", "tone": "확인", "component": "확인 페이지" },
+        { "id": "act-010", "situation": "PIN 코드 입력", "text": "유심 카드에 적힌 PIN 코드를 입력해 주세요.", "tone": "안내", "component": "입력 폼" },
+        { "id": "act-011", "situation": "비행기 모드 해제 안내", "text": "비행기 모드를 끄면 자동으로 네트워크에 연결돼요.", "tone": "안내", "component": "가이드" },
+        { "id": "act-012", "situation": "통신사 수동 선택", "text": "자동 연결이 안 되면 설정 > 통신사에서 직접 선택해 주세요.", "tone": "안내", "component": "설정 가이드" }
+      ]
+    },
+    "esim": {
+      "label": "eSIM 설치/관리",
+      "entries": [
+        { "id": "esm-001", "situation": "eSIM QR코드 발급", "text": "eSIM QR코드가 준비됐어요! 아래 QR을 스캔해서 설치하세요.", "tone": "안내", "component": "QR 페이지" },
+        { "id": "esm-002", "situation": "eSIM 원클릭 설치", "text": "'설치하기' 버튼을 누르면 자동으로 eSIM이 설치돼요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-003", "situation": "eSIM 수동 설치 안내", "text": "설정 > 셀룰러 > eSIM 추가에서 아래 코드를 직접 입력해 주세요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-004", "situation": "eSIM 설치 완료", "text": "eSIM 설치가 완료됐어요! 여행지에 도착하면 데이터를 켜주세요.", "tone": "축하", "component": "완료 페이지" },
+        { "id": "esm-005", "situation": "eSIM 활성화 타이밍", "text": "출발 전에 설치하고, 현지 도착 후 데이터 로밍을 켜면 바로 사용할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-006", "situation": "eSIM 설치 실패", "text": "eSIM 설치에 실패했어요. 기기가 eSIM을 지원하는지 확인해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "esm-007", "situation": "eSIM 데이터 충전", "text": "데이터가 부족하면 언제든 충전할 수 있어요. 추가 용량을 선택해 주세요.", "tone": "안내", "component": "충전 페이지" },
+        { "id": "esm-008", "situation": "eSIM 삭제 안내", "text": "여행이 끝나면 eSIM을 삭제해도 돼요. 설정 > 셀룰러에서 제거할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-009", "situation": "eSIM 미지원 기기", "text": "이 기기는 eSIM을 지원하지 않아요. 실물 유심을 추천드려요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "esm-010", "situation": "eSIM 데이터 사용량 확인", "text": "현재 데이터 사용량을 확인해 보세요. 남은 용량도 함께 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "esm-011", "situation": "iPhone eSIM 설치 Step 1", "text": "QR코드를 스캔하면 '셀룰러 요금제 추가' 화면이 나타나요. '추가'를 눌러주세요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-012", "situation": "iPhone 기본회선 설정", "text": "기본 회선은 '메인'을 선택해 주세요. 기존 번호로 전화와 문자를 받을 수 있어요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-013", "situation": "데이터 전환 허용 OFF", "text": "'셀룰러 데이터 전환 허용'을 꺼주세요. 켜두면 기존 요금제에서 데이터가 차감될 수 있어요.", "tone": "주의", "component": "설치 가이드" },
+        { "id": "esm-014", "situation": "메인 회선 로밍 OFF", "text": "메인 회선의 '데이터 로밍'은 반드시 꺼주세요. 켜두면 로밍 요금이 부과돼요.", "tone": "주의", "component": "설치 가이드" },
+        { "id": "esm-015", "situation": "보조 회선 로밍 ON", "text": "유심사 eSIM 회선의 '데이터 로밍'을 켜주세요. 이걸 켜야 현지에서 데이터를 쓸 수 있어요.", "tone": "안내", "component": "설치 가이드" },
+        { "id": "esm-016", "situation": "QR 확인 방법", "text": "카카오톡 알림톡, 이메일, 또는 유심사 앱 '내 데이터'에서 QR코드를 확인할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-017", "situation": "eSIM 재등록 불가 안내", "text": "eSIM은 한 번 등록하면 다른 폰으로 옮길 수 없어요. 폰 변경 시 새로 구매해야 해요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "esm-018", "situation": "캐리어락/SIM락 주의", "text": "캐리어락 또는 SIM락이 걸린 기기에서는 eSIM이 작동하지 않을 수 있어요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "esm-019", "situation": "중국/홍콩 기기 제한", "text": "중국·홍콩에서 출시된 기기는 국가 정책으로 eSIM 사용이 불가해요.", "tone": "안내", "component": "안내 모달" },
+        { "id": "esm-020", "situation": "5G → LTE 전환 안내", "text": "연결이 불안정하면 네트워크 모드를 LTE 우선으로 변경해 보세요. 더 안정적으로 연결돼요.", "tone": "안내", "component": "트러블슈팅" },
+        { "id": "esm-021", "situation": "eSIM 사전 설치 안내", "text": "출발 전에 미리 설치하고, 현지 도착 후 데이터 로밍만 켜면 바로 사용할 수 있어요.", "tone": "안내", "component": "가이드" },
+        { "id": "esm-022", "situation": "APN 자동 설정 실패", "text": "APN이 자동 설정되지 않았다면, 알림톡에 있는 정보로 직접 입력해 주세요. 대소문자를 정확히 맞춰야 해요.", "tone": "안내", "component": "트러블슈팅" }
+      ]
+    },
+    "travel": {
+      "label": "여행/로밍",
+      "entries": [
+        { "id": "trv-001", "situation": "출발 전 체크리스트", "text": "여행 전 꼭 확인하세요! eSIM 설치 → 데이터 로밍 ON → 출발!", "tone": "안내", "component": "체크리스트" },
+        { "id": "trv-002", "situation": "현지 도착 활성화", "text": "현지에 도착했나요? 데이터 로밍을 켜면 바로 인터넷을 쓸 수 있어요.", "tone": "친근", "component": "푸시 알림" },
+        { "id": "trv-003", "situation": "데이터 소진 임박", "text": "데이터가 거의 다 찼어요. 지금 충전하면 여행 중 끊김 없이 쓸 수 있어요.", "tone": "긴급", "component": "푸시 알림" },
+        { "id": "trv-004", "situation": "데이터 소진 완료", "text": "데이터를 모두 사용했어요. 추가 충전하면 바로 다시 연결돼요.", "tone": "안내", "component": "알림" },
+        { "id": "trv-005", "situation": "구글맵 무료 데이터", "text": "구글맵은 데이터 차감 없이 무료로 이용할 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-006", "situation": "긴급 연락처 안내", "text": "긴급 상황 시 현지 대한민국 대사관 또는 119로 연락하세요.", "tone": "안내", "component": "긴급 페이지" },
+        { "id": "trv-007", "situation": "여행 종료 안내", "text": "즐거운 여행이었나요? 사용 후기를 남기면 포인트를 드려요!", "tone": "친근", "component": "푸시 알림" },
+        { "id": "trv-008", "situation": "멀티 국가 유심 안내", "text": "이 요금제로 여러 나라에서 사용할 수 있어요. 지원 국가를 확인해 보세요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-009", "situation": "VPN 사용 주의", "text": "일부 국가에서는 VPN 사용이 제한될 수 있어요. 현지 규정을 확인해 주세요.", "tone": "주의", "component": "안내 페이지" },
+        { "id": "trv-010", "situation": "통화/문자 불포함 안내", "text": "이 요금제는 데이터만 제공돼요. 통화가 필요하면 통화 포함 요금제를 확인해 보세요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "trv-011", "situation": "유효기간 안내", "text": "첫 데이터 사용일부터 {days}일간 이용할 수 있어요.", "tone": "안내", "component": "상품 상세" },
+        { "id": "trv-012", "situation": "시차 안내", "text": "현지 시간은 한국보다 {diff}시간 느려요. 유심 유효기간은 현지 시간 기준이에요.", "tone": "설명", "component": "여행 정보" },
+        { "id": "trv-013", "situation": "핫스팟 사용 안내", "text": "핫스팟(테더링)으로 다른 기기에서도 데이터를 함께 쓸 수 있어요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-014", "situation": "귀국 후 원래 유심 복구", "text": "여행이 끝나면 기존 유심으로 다시 바꿔 넣으면 돼요. 재부팅하면 자동 연결!", "tone": "안내", "component": "가이드" },
+        { "id": "trv-015", "situation": "데이터 충전 안내 (로밍망)", "text": "로밍망은 여행 중 데이터가 부족하면 앱에서 바로 충전할 수 있어요.", "tone": "안내", "component": "충전 안내" },
+        { "id": "trv-016", "situation": "데이터 충전 불가 (로컬망)", "text": "로컬망은 추가 충전이 불가해요. 충분한 데이터 요금제를 미리 선택하는 걸 추천해요.", "tone": "주의", "component": "안내 모달" },
+        { "id": "trv-017", "situation": "장기 체류 요금제", "text": "유학이나 출장으로 오래 머무시나요? 30일·60일·90일 장기 요금제를 확인해 보세요.", "tone": "추천", "component": "상품 추천" },
+        { "id": "trv-018", "situation": "외교부 긴급연락", "text": "긴급 상황 시 앱에서 외교부 콜센터나 119에 바로 연결할 수 있어요.", "tone": "안내", "component": "긴급 페이지" },
+        { "id": "trv-019", "situation": "화상회의 데이터 안내", "text": "화상회의는 시간당 약 1.5GB가 필요해요. 출장이라면 무제한 요금제를 추천해요.", "tone": "설명", "component": "상품 상세" },
+        { "id": "trv-020", "situation": "여행 체크리스트 완료", "text": "eSIM 설치 완료, 데이터 로밍 설정 완료! 즐거운 여행 되세요.", "tone": "축하", "component": "체크리스트" }
+      ]
+    },
+    "account": {
+      "label": "계정/마이페이지",
+      "entries": [
+        { "id": "acc-001", "situation": "로그인 실패", "text": "아이디 또는 비밀번호가 일치하지 않아요. 다시 확인해 주세요.", "tone": "안내", "component": "로그인 폼" },
+        { "id": "acc-002", "situation": "비밀번호 재설정", "text": "가입한 이메일로 재설정 링크를 보냈어요. 메일함을 확인해 주세요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "acc-003", "situation": "회원 탈퇴 확인", "text": "정말 탈퇴하시겠어요? 탈퇴하면 주문 내역과 혜택이 모두 사라져요.", "tone": "주의", "component": "확인 모달" },
+        { "id": "acc-004", "situation": "개인정보 수정 완료", "text": "정보가 수정됐어요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-005", "situation": "알림 설정 안내", "text": "원하는 알림만 골라 받을 수 있어요. 설정에서 변경해 보세요.", "tone": "안내", "component": "설정 페이지" },
+        { "id": "acc-006", "situation": "주문 내역 조회", "text": "지금까지 주문한 유심을 한눈에 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "acc-007", "situation": "결제 수단 등록", "text": "자주 쓰는 카드를 등록하면 다음 주문이 더 빨라져요.", "tone": "추천", "component": "결제 관리" },
+        { "id": "acc-008", "situation": "결제 수단 삭제", "text": "등록된 카드를 삭제했어요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-009", "situation": "포인트 안내", "text": "현재 보유 포인트는 {point}원이에요. 주문 시 바로 사용할 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "acc-010", "situation": "포인트 만료 임박", "text": "포인트 {point}원이 곧 만료돼요. 주문 시 사용해 보세요!", "tone": "긴급", "component": "푸시 알림" },
+        { "id": "acc-011", "situation": "소셜 계정 연동", "text": "카카오 계정이 연동됐어요. 다음부터 간편 로그인이 가능해요.", "tone": "확인", "component": "토스트" },
+        { "id": "acc-012", "situation": "휴면 계정 복구", "text": "오랜만이에요! 본인인증을 하면 계정이 다시 활성화돼요.", "tone": "친근", "component": "복구 페이지" }
+      ]
+    },
+    "support": {
+      "label": "고객지원",
+      "entries": [
+        { "id": "sup-001", "situation": "1:1 문의 접수", "text": "문의가 접수됐어요. 영업일 기준 1일 내 답변드릴게요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "sup-002", "situation": "FAQ 안내", "text": "자주 묻는 질문에서 답변을 찾아보세요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-003", "situation": "채팅 상담 시작", "text": "안녕하세요! 무엇을 도와드릴까요?", "tone": "친근", "component": "채팅" },
+        { "id": "sup-004", "situation": "환불 접수 완료", "text": "환불 요청이 접수됐어요. 3~5 영업일 내 처리될 예정이에요.", "tone": "안내", "component": "확인 페이지" },
+        { "id": "sup-005", "situation": "고객센터 운영시간", "text": "고객센터는 평일 09:00~18:00에 운영해요. 문의를 남기면 순서대로 답변드릴게요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-006", "situation": "교환 안내", "text": "수령 후 7일 이내에 교환 요청할 수 있어요. 개통 전 상품만 가능해요.", "tone": "안내", "component": "교환 페이지" },
+        { "id": "sup-007", "situation": "환불 불가 안내", "text": "이미 개통된 유심은 환불이 어려워요. 자세한 내용은 고객센터로 문의해 주세요.", "tone": "사과", "component": "안내 모달" },
+        { "id": "sup-008", "situation": "만족도 조사", "text": "유심사 서비스는 어떠셨나요? 소중한 의견을 들려주세요.", "tone": "친근", "component": "설문 모달" },
+        { "id": "sup-009", "situation": "상담 대기 안내", "text": "현재 상담 대기가 많아요. 예상 대기 시간은 약 {time}분이에요.", "tone": "안내", "component": "채팅" },
+        { "id": "sup-010", "situation": "상담 종료", "text": "상담이 종료됐어요. 더 궁금한 점이 있으면 언제든 문의해 주세요!", "tone": "친근", "component": "채팅" },
+        { "id": "sup-011", "situation": "불편 접수 감사", "text": "알려주셔서 감사해요. 빠르게 확인하고 개선할게요.", "tone": "사과", "component": "확인 페이지" },
+        { "id": "sup-012", "situation": "긴급 장애 공지", "text": "일부 서비스에 접속이 어려운 상황이에요. 빠르게 복구하고 있어요.", "tone": "사과", "component": "공지 배너" },
+        { "id": "sup-013", "situation": "24시간 고객센터 안내", "text": "유심사 고객센터는 365일 24시간 운영해요. 언제든 편하게 문의하세요.", "tone": "안내", "component": "고객센터" },
+        { "id": "sup-014", "situation": "유심사케어 보상 안내", "text": "통신 장애로 불편을 겪으셨다면 유심사케어로 최대 30만원까지 보상받을 수 있어요.", "tone": "안내", "component": "보상 안내" },
+        { "id": "sup-015", "situation": "유심사케어 자동 가입", "text": "3GB 이상 데이터 상품 구매 시 유심사케어에 자동으로 가입돼요.", "tone": "확인", "component": "구매 완료" },
+        { "id": "sup-016", "situation": "eSIM 환불 안내", "text": "eSIM은 설치 전이라면 전액 환불이 가능해요. 설치 후에는 환불이 어려워요.", "tone": "안내", "component": "환불 안내" },
+        { "id": "sup-017", "situation": "물리유심 교환", "text": "수령 후 7일 이내, 개통 전 상품만 교환할 수 있어요.", "tone": "안내", "component": "교환 안내" },
+        { "id": "sup-018", "situation": "연결 문제 자가진단", "text": "1. 재부팅 → 2. APN 확인 → 3. LTE 모드 전환. 안 되면 고객센터로 문의해 주세요.", "tone": "안내", "component": "트러블슈팅" }
+      ]
+    },
+    "system": {
+      "label": "시스템/공통",
+      "entries": [
+        { "id": "sys-001", "situation": "네트워크 오류", "text": "인터넷 연결이 불안정해요. 연결 상태를 확인하고 다시 시도해 주세요.", "tone": "안내", "component": "에러" },
+        { "id": "sys-002", "situation": "서버 점검", "text": "더 나은 서비스를 위해 점검 중이에요. 곧 다시 만나요!", "tone": "안내", "component": "점검 페이지" },
+        { "id": "sys-003", "situation": "세션 만료", "text": "안전을 위해 자동으로 로그아웃됐어요. 다시 로그인해 주세요.", "tone": "안내", "component": "모달" },
+        { "id": "sys-004", "situation": "업데이트 안내", "text": "새로운 기능이 추가됐어요! 업데이트하고 더 편리하게 이용해 보세요.", "tone": "친근", "component": "배너" },
+        { "id": "sys-005", "situation": "빈 상태(Empty State)", "text": "아직 주문 내역이 없어요. 첫 유심을 주문해 보세요!", "tone": "친근", "component": "빈 페이지" },
+        { "id": "sys-006", "situation": "카메라 권한 요청", "text": "QR코드 스캔을 위해 카메라 접근이 필요해요.", "tone": "안내", "component": "권한 요청" },
+        { "id": "sys-007", "situation": "로딩 중", "text": "잠시만요, 가져오고 있어요...", "tone": "안내", "component": "로딩 스피너" },
+        { "id": "sys-008", "situation": "페이지 없음 (404)", "text": "페이지를 찾을 수 없어요. 주소를 다시 확인해 주세요.", "tone": "안내", "component": "에러 페이지" },
+        { "id": "sys-009", "situation": "앱 업데이트 필수", "text": "새 버전이 나왔어요! 업데이트해야 계속 이용할 수 있어요.", "tone": "주의", "component": "강제 업데이트 모달" },
+        { "id": "sys-010", "situation": "오프라인 모드", "text": "인터넷에 연결되지 않았어요. 연결 후 자동으로 새로고침돼요.", "tone": "안내", "component": "오프라인 배너" },
+        { "id": "sys-011", "situation": "클립보드 복사 완료", "text": "복사됐어요!", "tone": "확인", "component": "토스트" },
+        { "id": "sys-012", "situation": "입력값 오류", "text": "올바른 형식으로 입력해 주세요.", "tone": "안내", "component": "인라인 에러" },
+        { "id": "sys-013", "situation": "필수 항목 누락", "text": "필수 항목을 입력해 주세요.", "tone": "안내", "component": "인라인 에러" },
+        { "id": "sys-014", "situation": "저장 완료", "text": "변경사항이 저장됐어요.", "tone": "확인", "component": "토스트" },
+        { "id": "sys-015", "situation": "삭제 확인", "text": "정말 삭제하시겠어요? 이 작업은 되돌릴 수 없어요.", "tone": "주의", "component": "확인 모달" }
+      ]
+    },
+    "marketing": {
+      "label": "마케팅/프로모션",
+      "entries": [
+        { "id": "mkt-001", "situation": "할인 이벤트", "text": "지금 주문하면 최대 30% 할인! 놓치지 마세요.", "tone": "긴급", "component": "배너" },
+        { "id": "mkt-002", "situation": "리뷰 작성 유도", "text": "사용 후기를 남겨주세요! 포인트 500원을 드려요.", "tone": "친근", "component": "알림" },
+        { "id": "mkt-003", "situation": "추천인 이벤트", "text": "친구에게 유심사를 소개하면 둘 다 3,000원 할인!", "tone": "친근", "component": "이벤트 페이지" },
+        { "id": "mkt-004", "situation": "장바구니 리마인더", "text": "담아둔 유심이 기다리고 있어요. 지금 주문하면 오늘 출발!", "tone": "친근", "component": "푸시 알림" },
+        { "id": "mkt-005", "situation": "여름휴가 시즌", "text": "여름 여행 준비 끝! 유심사로 해외 데이터 걱정 없이 떠나세요.", "tone": "친근", "component": "배너" },
+        { "id": "mkt-006", "situation": "연말연시 시즌", "text": "연말 해외여행, 유심사와 함께! 지금 주문하면 특별 할인.", "tone": "긴급", "component": "배너" },
+        { "id": "mkt-007", "situation": "골프여행 시즌", "text": "골프 여행에 딱! 현지에서 구글맵과 스코어 앱을 자유롭게 쓰세요.", "tone": "추천", "component": "배너" },
+        { "id": "mkt-008", "situation": "졸업여행 시즌", "text": "졸업여행은 유심사와 함께! 친구들과 사진도 바로 공유하세요.", "tone": "친근", "component": "배너" },
+        { "id": "mkt-009", "situation": "신학기 유학생", "text": "유학 준비 중이라면, 장기 요금제로 데이터 걱정 없이 공부하세요.", "tone": "안내", "component": "배너" },
+        { "id": "mkt-010", "situation": "출장 비즈니스", "text": "해외 출장에 안정적인 데이터! 로컬망으로 화상회의도 끊김 없이.", "tone": "설명", "component": "배너" },
+        { "id": "mkt-011", "situation": "신규가입 혜택", "text": "지금 가입하면 즉시 2종 혜택! 첫 주문 할인 쿠폰을 받아보세요.", "tone": "긴급", "component": "팝업" },
+        { "id": "mkt-012", "situation": "3% 무제한 적립", "text": "모든 주문에서 3% 무제한 적립! 적립금은 다음 주문에 바로 사용할 수 있어요.", "tone": "추천", "component": "혜택 배너" },
+        { "id": "mkt-013", "situation": "출석 체크 적립", "text": "매일 출석하면 100원 적립! 한 달 개근하면 보너스 1,000원까지.", "tone": "친근", "component": "앱 이벤트" },
+        { "id": "mkt-014", "situation": "쿠폰 적용 안내", "text": "결제 단계에서 '쿠폰 선택'을 누르면 할인 금액이 자동 반영돼요.", "tone": "안내", "component": "결제 안내" },
+        { "id": "mkt-015", "situation": "USIM 무료 배송", "text": "물리유심은 무료 배송! 오후 2시 전 주문하면 당일 출발해요.", "tone": "확인", "component": "배송 안내" },
+        { "id": "mkt-016", "situation": "인플루언서 할인", "text": "클릭 한 번으로 자동 적용! 모든 상품 최대 20% 할인.", "tone": "긴급", "component": "이벤트 배너" },
+        { "id": "mkt-017", "situation": "앱 다운로드 유도", "text": "유심사 앱으로 더 빠르고 편리하게! 원클릭 eSIM 설치도 앱에서만.", "tone": "추천", "component": "배너" },
+        { "id": "mkt-018", "situation": "적립금 사용 안내", "text": "보유 적립금 {point}원을 주문 시 바로 사용할 수 있어요.", "tone": "안내", "component": "결제 안내" }
+      ]
+    },
+    "app": {
+      "label": "앱/내 데이터",
+      "entries": [
+        { "id": "app-001", "situation": "내 데이터 조회", "text": "구매한 eSIM과 유심을 한눈에 확인하세요. 사용량도 실시간으로 볼 수 있어요.", "tone": "안내", "component": "마이페이지" },
+        { "id": "app-002", "situation": "설치 및 활성화 버튼", "text": "'설치 및 활성화' 버튼을 누르면 QR코드와 설치 가이드를 확인할 수 있어요.", "tone": "안내", "component": "내 데이터" },
+        { "id": "app-003", "situation": "데이터 사용량 조회", "text": "현재 {used}GB / {total}GB 사용 중이에요.", "tone": "안내", "component": "사용량 카드" },
+        { "id": "app-004", "situation": "데이터 충전하기", "text": "데이터가 부족하면 여기서 바로 충전하세요. 충전 즉시 반영돼요.", "tone": "안내", "component": "충전 버튼" },
+        { "id": "app-005", "situation": "데이터 기간 연장", "text": "유효기간을 연장할 수 있어요. 남은 데이터도 함께 유지돼요.", "tone": "안내", "component": "연장 버튼" },
+        { "id": "app-006", "situation": "무료 전화 안내", "text": "앱에서 현지 무료전화를 이용할 수 있어요. 긴급 연락에 활용하세요.", "tone": "안내", "component": "무료전화" },
+        { "id": "app-007", "situation": "푸시 알림 수신", "text": "여행지 도착, 데이터 소진 임박 등 중요한 알림을 받아보세요.", "tone": "추천", "component": "알림 설정" },
+        { "id": "app-008", "situation": "원클릭 설치 안내", "text": "클릭 한 번으로 eSIM이 설치돼요. QR코드 스캔 없이 더 간편하게!", "tone": "추천", "component": "설치 버튼" },
+        { "id": "app-009", "situation": "앱 업데이트 알림", "text": "새로운 기능이 추가됐어요! 업데이트하면 원클릭 설치를 이용할 수 있어요.", "tone": "안내", "component": "업데이트 배너" },
+        { "id": "app-010", "situation": "긴급 SOS 연결", "text": "긴급 상황 시 외교부 콜센터(+82-2-3210-0404) 또는 119에 바로 연결돼요.", "tone": "안내", "component": "긴급 버튼" }
+      ]
+    }
+  },
+  "competitors": {
+    "description": "경쟁사 UX 문구 비교 (참고용)",
+    "services": {
+      "airalo": {
+        "name": "에어알로 (Airalo)",
+        "style": "글로벌 영문 기반, 심플하고 직관적",
+        "examples": [
+          { "situation": "구매 완료", "text": "Your eSIM is ready! Install it now.", "tone": "간결" },
+          { "situation": "설치 안내", "text": "Go to Settings > Cellular > Add eSIM", "tone": "직관적" },
+          { "situation": "데이터 소진", "text": "You've used all your data. Top up to stay connected.", "tone": "중립" }
+        ]
+      },
+      "roamingDokkaebi": {
+        "name": "로밍도깨비",
+        "style": "한국어 기반, 실용적이고 정보 중심",
+        "examples": [
+          { "situation": "구매 완료", "text": "구매가 완료되었습니다. QR코드를 확인해주세요.", "tone": "격식체" },
+          { "situation": "설치 안내", "text": "QR코드를 스캔하여 eSIM을 설치해주세요.", "tone": "격식체" },
+          { "situation": "데이터 소진", "text": "데이터를 모두 사용하였습니다.", "tone": "격식체" }
+        ]
+      },
+      "usimsa_advantage": "유심사는 해요체 + 다음 행동 안내로 친근하면서도 실용적인 UX 라이팅을 지향"
+    }
+  },
+  "seasonalGuide": {
+    "description": "시즌별 마케팅 문구 가이드",
+    "seasons": {
+      "summer": { "period": "6~8월", "keywords": ["여름휴가", "동남아", "유럽", "가족여행"], "tone": "친근" },
+      "winter": { "period": "12~2월", "keywords": ["연말", "크리스마스", "겨울여행", "스키"], "tone": "긴급" },
+      "spring": { "period": "3~5월", "keywords": ["졸업여행", "벚꽃", "일본", "골든위크"], "tone": "친근" },
+      "fall": { "period": "9~11월", "keywords": ["추석", "골프", "단풍", "출장"], "tone": "추천" },
+      "yearRound": { "period": "상시", "keywords": ["유학", "출장", "워홀", "장기체류"], "tone": "안내" }
+    }
+  },
+  "toneGuide": {
+    "친근": { "description": "일상적이고 따뜻한 말투", "suffix": "~요, ~세요", "emoji": true },
+    "안내": { "description": "명확하고 차분한 정보 전달", "suffix": "~해 주세요, ~돼요", "emoji": false },
+    "축하": { "description": "긍정적이고 밝은 피드백", "suffix": "~했어요!, ~완료!", "emoji": true },
+    "주의": { "description": "중요 사항을 강조하되 불안하지 않게", "suffix": "~하시겠어요?, ~사라져요", "emoji": false },
+    "사과": { "description": "진심 어린 사과와 빠른 해결 의지", "suffix": "~죄송해요, ~할게요", "emoji": false },
+    "긴급": { "description": "시간 제한을 강조하되 과하지 않게", "suffix": "~마세요, ~지금", "emoji": true },
+    "확인": { "description": "행동 결과를 간결하게 확인", "suffix": "~했어요, ~됐어요", "emoji": false },
+    "설명": { "description": "쉽고 구체적인 정보 제공", "suffix": "~할 수 있어요, ~이에요", "emoji": false },
+    "추천": { "description": "자연스러운 추천과 근거 제시", "suffix": "~이에요, ~해보세요", "emoji": false }
+  }
+}
