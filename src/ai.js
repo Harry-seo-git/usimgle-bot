@@ -1,6 +1,6 @@
 /**
  * AI 호출 모듈
- * - 4개 프로바이더 폴백 체인
+ * - 3개 프로바이더 폴백 체인 (Groq → OpenAI → Claude)
  * - 안전한 응답 파싱 (optional chaining)
  * - 프롬프트 인젝션 방지 (시스템/유저 메시지 분리)
  */
@@ -64,25 +64,7 @@ async function askAI(systemPrompt, userMessage) {
       return null;
     });
 
-  // 1. OpenAI
-  if (process.env.OPENAI_API_KEY) {
-    const r = await post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userMessage },
-        ],
-        max_tokens: 800,
-      },
-      { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-    );
-    const text = r?.choices?.[0]?.message?.content?.trim();
-    if (text) return text;
-  }
-
-  // 2. Groq
+  // 1. Groq (1순위)
   if (process.env.GROQ_API_KEY) {
     const r = await post(
       'https://api.groq.com/openai/v1/chat/completions',
@@ -100,7 +82,25 @@ async function askAI(systemPrompt, userMessage) {
     if (text) return text;
   }
 
-  // 3. Claude
+  // 2. OpenAI (폴백)
+  if (process.env.OPENAI_API_KEY) {
+    const r = await post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+        ],
+        max_tokens: 800,
+      },
+      { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+    );
+    const text = r?.choices?.[0]?.message?.content?.trim();
+    if (text) return text;
+  }
+
+  // 3. Claude (폴백)
   if (process.env.CLAUDE_API_KEY) {
     const r = await post(
       'https://api.anthropic.com/v1/messages',
@@ -113,20 +113,6 @@ async function askAI(systemPrompt, userMessage) {
       { 'x-api-key': process.env.CLAUDE_API_KEY, 'anthropic-version': '2023-06-01' },
     );
     const text = r?.content?.[0]?.text?.trim();
-    if (text) return text;
-  }
-
-  // 4. Gemini
-  if (process.env.GEMINI_API_KEY) {
-    const r = await post(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
-      {
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ parts: [{ text: userMessage }] }],
-      },
-      { 'x-goog-api-key': process.env.GEMINI_API_KEY },
-    );
-    const text = r?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
     if (text) return text;
   }
 
