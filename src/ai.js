@@ -58,15 +58,11 @@ ${tones}
 
 // --- AI 호출 (시스템/유저 메시지 분리) ---
 async function askAI(systemPrompt, userMessage) {
-  // 하위 호환: 단일 인자로 호출 시
-  if (!userMessage) {
-    userMessage = systemPrompt;
-    systemPrompt = buildSystemPrompt();
-  }
-
-  const sanitizedUser = sanitizeInput(userMessage);
   const post = (url, body, headers = {}) =>
-    axios.post(url, body, { headers, timeout: 15000 }).then((r) => r.data).catch(() => null);
+    axios.post(url, body, { headers, timeout: 15000 }).then((r) => r.data).catch((err) => {
+      console.error(`AI API 호출 실패 (${url}):`, err.response?.status, err.response?.data?.error?.message || err.message);
+      return null;
+    });
 
   // 1. OpenAI
   if (process.env.OPENAI_API_KEY) {
@@ -76,7 +72,7 @@ async function askAI(systemPrompt, userMessage) {
         model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: sanitizedUser },
+          { role: 'user', content: userMessage },
         ],
         max_tokens: 800,
       },
@@ -94,7 +90,7 @@ async function askAI(systemPrompt, userMessage) {
         model: 'llama3-70b-8192',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: sanitizedUser },
+          { role: 'user', content: userMessage },
         ],
         max_tokens: 800,
       },
@@ -112,7 +108,7 @@ async function askAI(systemPrompt, userMessage) {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 800,
         system: systemPrompt,
-        messages: [{ role: 'user', content: sanitizedUser }],
+        messages: [{ role: 'user', content: userMessage }],
       },
       { 'x-api-key': process.env.CLAUDE_API_KEY, 'anthropic-version': '2023-06-01' },
     );
@@ -120,13 +116,13 @@ async function askAI(systemPrompt, userMessage) {
     if (text) return text;
   }
 
-  // 4. Gemini (API 키를 헤더로 전달)
+  // 4. Gemini
   if (process.env.GEMINI_API_KEY) {
     const r = await post(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
       {
         systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ parts: [{ text: sanitizedUser }] }],
+        contents: [{ parts: [{ text: userMessage }] }],
       },
       { 'x-goog-api-key': process.env.GEMINI_API_KEY },
     );

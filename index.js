@@ -14,8 +14,7 @@ const cron = require('node-cron');
 require('dotenv').config();
 
 // --- 모듈 임포트 ---
-const { guide } = require('./src/data');
-const { searchGuide } = require('./src/data');
+const { guide, searchGuide } = require('./src/data');
 const { askAI, buildSystemPrompt, sanitizeInput } = require('./src/ai');
 const { sheetEnabled, addRow } = require('./src/sheets');
 
@@ -162,7 +161,7 @@ app.command('/uxr', async ({ command, ack, respond }) => {
     console.error('Command error:', err);
     await respond({
       response_type: 'ephemeral',
-      text: `오류가 발생했어요: ${err.message}`,
+      text: '오류가 발생했어요. 잠시 후 다시 시도해 주세요.',
     });
   }
 });
