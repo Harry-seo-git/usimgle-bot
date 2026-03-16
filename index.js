@@ -11,6 +11,7 @@
 
 const { App, ExpressReceiver } = require('@slack/bolt');
 const cron = require('node-cron');
+const axios = require('axios');
 require('dotenv').config();
 
 // --- 모듈 임포트 ---
@@ -428,6 +429,15 @@ const port = process.env.PORT || 3000;
     console.log(`알림 채널: ${notifyChannelId}`);
   }
 })();
+
+// --- Render Free 슬립 방지: 14분마다 self-ping ---
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+if (RENDER_URL) {
+  setInterval(() => {
+    axios.get(`${RENDER_URL}/health`).catch(() => {});
+  }, 14 * 60 * 1000);
+  console.log('Self-ping 활성화 (14분 간격)');
+}
 
 // --- Graceful Shutdown ---
 function gracefulShutdown(signal) {

@@ -116,6 +116,11 @@ async function askAI(systemPrompt, userMessage) {
     if (text) return text;
   }
 
+  console.error('모든 AI 프로바이더 실패:', {
+    groq: !!process.env.GROQ_API_KEY,
+    openai: !!process.env.OPENAI_API_KEY,
+    claude: !!process.env.CLAUDE_API_KEY,
+  });
   return null;
 }
 
