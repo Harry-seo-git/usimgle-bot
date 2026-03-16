@@ -193,6 +193,8 @@ app.action('revise_suggest', async ({ action, ack, respond }) => {
   await ack();
   const { situation } = JSON.parse(action.value);
 
+  await respond({ response_type: 'ephemeral', text: '수정된 추천 문구를 생성하고 있어요... 잠시만 기다려 주세요.' });
+
   const userMessage = `아래 상황에 대해 이전과 다른 방향으로 UX 문구 3개를 새롭게 제안해줘.
 더 간결하거나, 다른 톤으로, 또는 다른 관점에서 접근해봐.
 각 문구마다 톤, 컴포넌트, 이유를 알려줘.
@@ -257,6 +259,8 @@ async function handleNaturalLanguage(text, say) {
   if (!text) {
     return say('안녕하세요! UX 라이팅에 대해 물어보세요. 예: "결제 실패 시 메시지 추천해줘"');
   }
+
+  await say('답변을 준비하고 있어요... 잠시만 기다려 주세요.');
 
   const keywords = text.split(/\s+/).filter((w) => w.length > 1);
   const allResults = [];
