@@ -129,4 +129,4 @@ Render Free 티어 기준:
 
 ## 라이선스
 
-Private
+[MIT License](LICENSE) © 2025 Harry
