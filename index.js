@@ -11,11 +11,11 @@
 
 const { App, ExpressReceiver } = require('@slack/bolt');
 const cron = require('node-cron');
+const axios = require('axios');
 require('dotenv').config();
 
 // --- 모듈 임포트 ---
-const { guide } = require('./src/data');
-const { searchGuide } = require('./src/data');
+const { guide, searchGuide } = require('./src/data');
 const { askAI, buildSystemPrompt, sanitizeInput } = require('./src/ai');
 const { sheetEnabled, addRow } = require('./src/sheets');
 
@@ -162,7 +162,7 @@ app.command('/uxr', async ({ command, ack, respond }) => {
     console.error('Command error:', err);
     await respond({
       response_type: 'ephemeral',
-      text: `오류가 발생했어요: ${err.message}`,
+      text: '오류가 발생했어요. 잠시 후 다시 시도해 주세요.',
     });
   }
 });
@@ -192,6 +192,8 @@ app.action('adopt_suggest', async ({ action, ack, respond, body }) => {
 app.action('revise_suggest', async ({ action, ack, respond }) => {
   await ack();
   const { situation } = JSON.parse(action.value);
+
+  await respond({ response_type: 'ephemeral', text: '수정된 추천 문구를 생성하고 있어요... 잠시만 기다려 주세요.' });
 
   const userMessage = `아래 상황에 대해 이전과 다른 방향으로 UX 문구 3개를 새롭게 제안해줘.
 더 간결하거나, 다른 톤으로, 또는 다른 관점에서 접근해봐.
@@ -257,6 +259,8 @@ async function handleNaturalLanguage(text, say) {
   if (!text) {
     return say('안녕하세요! UX 라이팅에 대해 물어보세요. 예: "결제 실패 시 메시지 추천해줘"');
   }
+
+  await say('답변을 준비하고 있어요... 잠시만 기다려 주세요.');
 
   const keywords = text.split(/\s+/).filter((w) => w.length > 1);
   const allResults = [];
@@ -425,6 +429,15 @@ const port = process.env.PORT || 3000;
     console.log(`알림 채널: ${notifyChannelId}`);
   }
 })();
+
+// --- Render Free 슬립 방지: 14분마다 self-ping ---
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+if (RENDER_URL) {
+  setInterval(() => {
+    axios.get(`${RENDER_URL}/health`).catch(() => {});
+  }, 14 * 60 * 1000);
+  console.log('Self-ping 활성화 (14분 간격)');
+}
 
 // --- Graceful Shutdown ---
 function gracefulShutdown(signal) {

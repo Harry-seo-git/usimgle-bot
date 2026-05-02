@@ -1,6 +1,6 @@
 /**
  * AI 호출 모듈
- * - 4개 프로바이더 폴백 체인
+ * - 3개 프로바이더 폴백 체인 (Groq → OpenAI → Claude)
  * - 안전한 응답 파싱 (optional chaining)
  * - 프롬프트 인젝션 방지 (시스템/유저 메시지 분리)
  */
@@ -58,43 +58,21 @@ ${tones}
 
 // --- AI 호출 (시스템/유저 메시지 분리) ---
 async function askAI(systemPrompt, userMessage) {
-  // 하위 호환: 단일 인자로 호출 시
-  if (!userMessage) {
-    userMessage = systemPrompt;
-    systemPrompt = buildSystemPrompt();
-  }
-
-  const sanitizedUser = sanitizeInput(userMessage);
   const post = (url, body, headers = {}) =>
-    axios.post(url, body, { headers, timeout: 15000 }).then((r) => r.data).catch(() => null);
+    axios.post(url, body, { headers, timeout: 15000 }).then((r) => r.data).catch((err) => {
+      console.error(`AI API 호출 실패 (${url}):`, err.response?.status, err.response?.data?.error?.message || err.message);
+      return null;
+    });
 
-  // 1. OpenAI
-  if (process.env.OPENAI_API_KEY) {
-    const r = await post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: sanitizedUser },
-        ],
-        max_tokens: 800,
-      },
-      { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-    );
-    const text = r?.choices?.[0]?.message?.content?.trim();
-    if (text) return text;
-  }
-
-  // 2. Groq
+  // 1. Groq (1순위)
   if (process.env.GROQ_API_KEY) {
     const r = await post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'llama3-70b-8192',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: sanitizedUser },
+          { role: 'user', content: userMessage },
         ],
         max_tokens: 800,
       },
@@ -104,7 +82,25 @@ async function askAI(systemPrompt, userMessage) {
     if (text) return text;
   }
 
-  // 3. Claude
+  // 2. OpenAI (폴백)
+  if (process.env.OPENAI_API_KEY) {
+    const r = await post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+        ],
+        max_tokens: 800,
+      },
+      { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+    );
+    const text = r?.choices?.[0]?.message?.content?.trim();
+    if (text) return text;
+  }
+
+  // 3. Claude (폴백)
   if (process.env.CLAUDE_API_KEY) {
     const r = await post(
       'https://api.anthropic.com/v1/messages',
@@ -112,7 +108,7 @@ async function askAI(systemPrompt, userMessage) {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 800,
         system: systemPrompt,
-        messages: [{ role: 'user', content: sanitizedUser }],
+        messages: [{ role: 'user', content: userMessage }],
       },
       { 'x-api-key': process.env.CLAUDE_API_KEY, 'anthropic-version': '2023-06-01' },
     );
@@ -120,20 +116,11 @@ async function askAI(systemPrompt, userMessage) {
     if (text) return text;
   }
 
-  // 4. Gemini (API 키를 헤더로 전달)
-  if (process.env.GEMINI_API_KEY) {
-    const r = await post(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
-      {
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ parts: [{ text: sanitizedUser }] }],
-      },
-      { 'x-goog-api-key': process.env.GEMINI_API_KEY },
-    );
-    const text = r?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    if (text) return text;
-  }
-
+  console.error('모든 AI 프로바이더 실패:', {
+    groq: !!process.env.GROQ_API_KEY,
+    openai: !!process.env.OPENAI_API_KEY,
+    claude: !!process.env.CLAUDE_API_KEY,
+  });
   return null;
 }
 
